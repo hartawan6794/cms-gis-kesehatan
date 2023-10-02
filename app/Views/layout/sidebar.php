@@ -16,7 +16,7 @@
             <!-- Sidebar Menu -->
             <ul class="nav nav-pills nav-sidebar flex-column" data-lte-toggle="treeview" role="menu" data-accordion="false">
               <li class="nav-item">
-                <a href="<?= base_url() ?>" class="nav-link <?= $seg ? '' : 'active' ?> ">
+                <a href="<?= base_url('home') ?>" class="nav-link <?= $seg =='home' ? 'active' : '' ?> ">
                   <i class="nav-icon fa fa-desktop"></i>
                   <p>
                     Dashboard
