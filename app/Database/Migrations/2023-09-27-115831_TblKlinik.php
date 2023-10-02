@@ -8,7 +8,7 @@ class TblKlinik extends Migration
 {
     public function up()
     {
-        $fields = [ 
+        $fields = [
             'id_klinik' => [
                 'type' => 'TINYINT',
                 'unsigned' => 3,
@@ -21,6 +21,10 @@ class TblKlinik extends Migration
                 'type' => 'VARCHAR',
                 'constraint' => '255'
             ],
+            'deskripsi' => [
+                'type' => 'VARCHAR',
+                'constraint' => '255'
+            ],
             'Latitude' => [
                 'type' => 'VARCHAR',
                 'constraint' => '255'
@@ -28,6 +32,16 @@ class TblKlinik extends Migration
             'longitude' => [
                 'type' => 'VARCHAR',
                 'constraint' => '255'
+            ],
+            'gambar' => [
+                'type' => 'VARCHAR',
+                'null' => true,
+                'constraint' => '255'
+            ],
+            'is_jadwal' => [
+                'type' => 'TINYINT',
+                'constraint' => 3,
+                'null' => true,
             ],
             'created_at' => [
                 'type'    => 'TIMESTAMP',
@@ -45,7 +59,6 @@ class TblKlinik extends Migration
         $this->forge->addPrimaryKey('id_klinik');
         $attributes = ['ENGINE' => 'InnoDB'];
         $this->forge->createTable('tbl_klinik', false, $attributes);
-
     }
 
     public function down()
