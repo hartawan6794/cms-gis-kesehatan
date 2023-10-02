@@ -6,11 +6,19 @@
 <div class="card">
   <div class="card-header">
     <div class="row">
-      <div class="col-9 mt-2">
+      <div class="col-9 md-2">
         <h3 class="card-title">Klinik</h3>
       </div>
       <div class="col-3">
-        <button type="button" class="btn float-end btn-success" onclick="save()" title="<?= lang("Tambah") ?>"> <i class="fa fa-plus"></i> <?= lang('Tambah') ?></button>
+        <!-- <div class="btn-group">
+          <button type="button" class=" btn btn-lg dropdown-toggle btn-warning" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="fa-solid fa fa-upload"></i> Import Excel</button>
+          <div class="dropdown-menu">
+            <a class="dropdown-item text-info" onclick="unduh()"> <i class="fa fa-upload "></i> Import</a>
+            <a class="dropdown-item text-info" href="<?php base_url() ?>/download" target="_blank"> <i class="fa fa-download"></i> Download Contoh</a>
+          </div>
+        </div> -->
+        <button type="button" class="btn btn-success float-end btn-lg" onclick="save()" title="<?= lang("Tambah") ?>"> <i class="fa fa-plus"></i> <?= lang('Tambah') ?></button>
       </div>
     </div>
   </div>
@@ -22,8 +30,10 @@
           <th>No</th>
           <th>Nama klinik</th>
           <th>Kecamatan</th>
+          <th>Deskripsi</th>
           <th>Latitude</th>
           <th>Longitude</th>
+          <th>Gambar</th>
           <th>Dibuat</th>
           <th>Diubah</th>
 
@@ -65,6 +75,12 @@
             </div>
             <div class="col-md-12">
               <div class="form-group mb-3">
+                <label for="deskripsi" class="col-form-label"> Deskripsi: <span class="text-danger">*</span> </label>
+                <input type="text" id="deskripsi" name="deskripsi" class="form-control" placeholder="Deskripsi" minlength="0" maxlength="255" required>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <div class="form-group mb-3">
                 <label for="Latitude" class="col-form-label"> Latitude: <span class="text-danger">*</span> </label>
                 <input type="text" id="Latitude" name="Latitude" class="form-control" placeholder="Latitude" minlength="0" maxlength="255" required>
               </div>
@@ -77,16 +93,16 @@
             </div>
             <div class="col-md-12">
               <div class="form-group mb-3">
-                <label for="created_at" class="col-form-label"> Dibuat: </label>
-                <input type="date" id="created_at" name="created_at" class="form-control" dateISO="true">
+                <label for="gambar" class="col-form-label"> Gambar: </label>
+                <input type="file" id="gambar" name="gambar" class="form-control" placeholder="Gambar" minlength="0" maxlength="255">
               </div>
             </div>
-            <div class="col-md-12">
+            <!-- <div class="col-md-12">
               <div class="form-group mb-3">
-                <label for="updated_at" class="col-form-label"> Diubah: </label>
-                <input type="date" id="updated_at" name="updated_at" class="form-control" dateISO="true">
+                <label for="is_jadwal" class="col-form-label"> Is jadwal: </label>
+                <input type="number" id="is_jadwal" name="is_jadwal" class="form-control" placeholder="Is jadwal" minlength="0" maxlength="3">
               </div>
-            </div>
+            </div> -->
           </div>
 
           <div class="form-group text-center">
@@ -101,6 +117,48 @@
   </div><!-- /.modal-dialog -->
 </div>
 <!-- /ADD modal content -->
+
+<!-- import modal content -->
+<div id="excel-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-md">
+    <div class="modal-content">
+      <div class="text-center bg-info p-3" id="model-header">
+        <h4 class="modal-title text-white" id="info-header-modalLabel"></h4>
+      </div>
+      <div class="modal-body">
+        <form id="excel-form" class="pl-3 pr-3">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group mb-3">
+                <label for="excel" class="col-form-label"> File: </label>
+                <input type="file" id="excel" name="excel" class="form-control" placeholder="excel">
+              </div>
+            </div>
+            <!-- <div class="col-md-12">
+              <div class="form-group mb-3">
+                <label for="is_jadwal" class="col-form-label"> Is jadwal: </label>
+                <input type="number" id="is_jadwal" name="is_jadwal" class="form-control" placeholder="Is jadwal" minlength="0" maxlength="3">
+              </div>
+            </div> -->
+          </div>
+
+          <div class="form-group text-center">
+            <div class="btn-group">
+              <button type="submit" class="btn btn-success mr-2" id="form-btn"><?= lang("Import") ?></button>
+              <button type="button" class="btn btn-danger" data-bs-dismiss="modal"><?= lang("Batal") ?></button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div>
+<!-- /ADD modal content -->
+
+
+
+
+
 
 
 
@@ -174,8 +232,11 @@
           $("#data-form #id_klinik").val(response.id_klinik);
           $("#data-form #nama_klinik").val(response.nama_klinik);
           $("#data-form #kecamatan").val(response.kecamatan);
+          $("#data-form #deskripsi").val(response.deskripsi);
           $("#data-form #Latitude").val(response.Latitude);
           $("#data-form #longitude").val(response.longitude);
+          $("#data-form #gambar").val(response.gambar);
+          $("#data-form #is_jadwal").val(response.is_jadwal);
           $("#data-form #created_at").val(response.created_at);
           $("#data-form #updated_at").val(response.updated_at);
 
@@ -206,14 +267,16 @@
         }
       },
       submitHandler: function(form) {
-        var form = $('#data-form');
+        // var form = $('#data-form');
         $(".text-danger").remove();
         $.ajax({
           // fixBug get url from global function only
           // get global variable is bug!
           url: getUrl(),
           type: 'post',
-          data: form.serialize(),
+          data: new FormData(form),
+          processData: false,
+          contentType: false,
           cache: false,
           dataType: 'json',
           beforeSend: function() {
@@ -268,8 +331,6 @@
     });
   }
 
-
-
   function remove(id_klinik) {
     Swal.fire({
       title: "<?= lang("Hapus") ?>",
@@ -316,6 +377,34 @@
           }
         });
       }
+    })
+  }
+
+  function unduh() {
+    $('#excel-modal').modal('show');
+    $('#excel-form').submit(function(event) {
+      event.preventDefault();
+      // $this[0].reset();
+      var formData = $(this).serialize();
+      $.ajax({
+        // fixBug get url from global function only
+        // get global variable is bug!
+        url: '<?php echo base_url($controller . "/import") ?>',
+        type: 'post',
+        data: formData,
+        // data: new FormData(form),
+        processData: false,
+        contentType: false,
+        cache: false,
+        dataType: 'json',
+        beforeSend: function() {
+          $('#form-btn').html('<i class="fa fa-spinner fa-spin"></i>');
+        },
+        success: function(response) {
+
+        }
+
+      });
     })
   }
 </script>

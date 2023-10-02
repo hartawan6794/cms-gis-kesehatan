@@ -7,6 +7,8 @@ use App\Controllers\BaseController;
 
 use App\Models\KlinikModel;
 
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+
 class Klinik extends BaseController
 {
 
@@ -42,18 +44,20 @@ class Klinik extends BaseController
 			$ops .= '<button type="button" class=" btn btn-sm dropdown-toggle btn-info" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">';
 			$ops .= '<i class="fa-solid fa-pen-square"></i>  </button>';
 			$ops .= '<div class="dropdown-menu">';
-			$ops .= '<a class="dropdown-item text-info" onClick="save(' . $value->id_klinik . ')"><i class="fa-solid fa-pen-to-square"></i>   ' .  lang("App.edit")  . '</a>';
-			$ops .= '<a class="dropdown-item text-orange" ><i class="fa-solid fa-copy"></i>   ' .  lang("App.copy")  . '</a>';
+			$ops .= '<a class="dropdown-item text-info" onClick="save(' . $value->id_klinik . ')"><i class="fa-solid fa-pen-to-square"></i>   ' .  lang("Ubah")  . '</a>';
 			$ops .= '<div class="dropdown-divider"></div>';
-			$ops .= '<a class="dropdown-item text-danger" onClick="remove(' . $value->id_klinik . ')"><i class="fa-solid fa-trash"></i>   ' .  lang("App.delete")  . '</a>';
+			$ops .= '<a class="dropdown-item text-danger" onClick="remove(' . $value->id_klinik . ')"><i class="fa-solid fa-trash"></i>   ' .  lang("Hapus")  . '</a>';
 			$ops .= '</div></div>';
 
 			$data['data'][$key] = array(
 				$no,
 				$value->nama_klinik,
 				$value->kecamatan,
+				$value->deskripsi,
 				$value->Latitude,
 				$value->longitude,
+				'<img src="' . base_url('/img/klinik/' . $value->gambar) . '" alt="' . $value->gambar . '" style="width:120px">',
+				// $value->is_jadwal,
 				$value->created_at,
 				$value->updated_at,
 
@@ -85,22 +89,32 @@ class Klinik extends BaseController
 	{
 		$response = array();
 
-		$fields['id_klinik'] = $this->request->getPost('id_klinik');
+		// $fields['id_klinik'] = $this->request->getPost('id_klinik');
 		$fields['nama_klinik'] = $this->request->getPost('nama_klinik');
 		$fields['kecamatan'] = $this->request->getPost('kecamatan');
+		$fields['deskripsi'] = $this->request->getPost('deskripsi');
 		$fields['Latitude'] = $this->request->getPost('Latitude');
 		$fields['longitude'] = $this->request->getPost('longitude');
-		$fields['created_at'] = $this->request->getPost('created_at');
-		$fields['updated_at'] = $this->request->getPost('updated_at');
+		$gambar = $this->request->getFile('gambar');
+		$fields['created_at'] = date('Y-m-d H:i:s');
+		// $fields['updated_at'] = $this->request->getPost('updated_at');
 
 
 		$this->validation->setRules([
-			'nama_klinik' => ['label' => 'Nama klinik', 'rules' => 'required|min_length[0]|max_length[255]'],
-			'kecamatan' => ['label' => 'Kecamatan', 'rules' => 'required|min_length[0]|max_length[255]'],
-			'Latitude' => ['label' => 'Latitude', 'rules' => 'required|min_length[0]|max_length[255]'],
-			'longitude' => ['label' => 'Longitude', 'rules' => 'required|min_length[0]|max_length[255]'],
-			'created_at' => ['label' => 'Dibuat', 'rules' => 'permit_empty|valid_date|min_length[0]'],
-			'updated_at' => ['label' => 'Diubah', 'rules' => 'permit_empty|valid_date|min_length[0]'],
+			'nama_klinik' => ['label' => 'Nama klinik', 'rules' => 'required'],
+			'kecamatan' => ['label' => 'Kecamatan', 'rules' => 'required'],
+			'deskripsi' => ['label' => 'Deskripsi', 'rules' => 'required'],
+			'Latitude' => ['label' => 'Latitude', 'rules' => 'required'],
+			'longitude' => ['label' => 'Longitude', 'rules' => 'required'],
+			'gambar' => [
+				'label' => 'Gambar',
+				'rules' => 'uploaded[gambar]|is_image[gambar]|mime_in[gambar,image/jpg,image/jpeg,image/png]|max_size[gambar,1024]',
+				'errors' => [
+					'max_size' => 'Ukuran file harus maksimal 1Mb',
+					'mime_in' => 'Harap masukkan file berupa gambar (jpg, jpeg, png)',
+					'is_image' => 'Harap masukkan file berupa gambar'
+				]
+			],
 
 		]);
 
@@ -110,6 +124,15 @@ class Klinik extends BaseController
 			$response['messages'] = $this->validation->getErrors(); //Show Error in Input Form
 
 		} else {
+
+			if ($gambar->getName() != '') {
+
+				$fileName = 'klinik-' . $gambar->getRandomName();
+				$fields['gambar'] = $fileName;
+				$gambar->move(WRITEPATH . '../public/img/klinik', $fileName);
+			}
+
+			// var_dump($fields);die;
 
 			if ($this->klinikModel->insert($fields)) {
 
@@ -132,20 +155,29 @@ class Klinik extends BaseController
 		$fields['id_klinik'] = $this->request->getPost('id_klinik');
 		$fields['nama_klinik'] = $this->request->getPost('nama_klinik');
 		$fields['kecamatan'] = $this->request->getPost('kecamatan');
+		$fields['deskripsi'] = $this->request->getPost('deskripsi');
 		$fields['Latitude'] = $this->request->getPost('Latitude');
 		$fields['longitude'] = $this->request->getPost('longitude');
-		$fields['created_at'] = $this->request->getPost('created_at');
-		$fields['updated_at'] = $this->request->getPost('updated_at');
+		$gambar = $this->request->getFile('gambar');
+		$fields['updated_at'] =  date('Y-m-d H:i:s');
 
+		$data = $this->klinikModel->select()->where('id_klinik', $fields['id_klinik'])->first();
 
 		$this->validation->setRules([
-			'nama_klinik' => ['label' => 'Nama klinik', 'rules' => 'required|min_length[0]|max_length[255]'],
-			'kecamatan' => ['label' => 'Kecamatan', 'rules' => 'required|min_length[0]|max_length[255]'],
-			'Latitude' => ['label' => 'Latitude', 'rules' => 'required|min_length[0]|max_length[255]'],
-			'longitude' => ['label' => 'Longitude', 'rules' => 'required|min_length[0]|max_length[255]'],
-			'created_at' => ['label' => 'Dibuat', 'rules' => 'permit_empty|valid_date|min_length[0]'],
-			'updated_at' => ['label' => 'Diubah', 'rules' => 'permit_empty|valid_date|min_length[0]'],
-
+			'nama_klinik' => ['label' => 'Nama klinik', 'rules' => 'required'],
+			'kecamatan' => ['label' => 'Kecamatan', 'rules' => 'required'],
+			'deskripsi' => ['label' => 'Deskripsi', 'rules' => 'required'],
+			'Latitude' => ['label' => 'Latitude', 'rules' => 'required'],
+			'longitude' => ['label' => 'Longitude', 'rules' => 'required'],
+			'gambar' => [
+				'label' => 'Gambar',
+				'rules' => 'uploaded[gambar]|is_image[gambar]|mime_in[gambar,image/jpg,image/jpeg,image/png]|max_size[gambar,1024]',
+				'errors' => [
+					'max_size' => 'Ukuran file harus maksimal 1Mb',
+					'mime_in' => 'Harap masukkan file berupa gambar (jpg, jpeg, png)',
+					'is_image' => 'Harap masukkan file berupa gambar'
+				]
+			],
 		]);
 
 		if ($this->validation->run($fields) == FALSE) {
@@ -154,6 +186,17 @@ class Klinik extends BaseController
 			$response['messages'] = $this->validation->getErrors(); //Show Error in Input Form
 
 		} else {
+
+			if ($gambar->getName() != '') {
+
+				//ketika file ada, menghapus file lama
+				if (file_exists('img/klinik/' . $data->gambar)) {
+					unlink('img/klinik/' . $data->gambar);
+				}
+				$fileName = 'klinik-' . $gambar->getRandomName();
+				$fields['gambar'] = $fileName;
+				$gambar->move(WRITEPATH . '../public/img/klinik', $fileName);
+			}
 
 			if ($this->klinikModel->update($fields['id_klinik'], $fields)) {
 
@@ -192,5 +235,31 @@ class Klinik extends BaseController
 		}
 
 		return $this->response->setJSON($response);
+	}
+
+
+	public function import()
+	{ // Ambil file Excel dari form unggahan
+		$file = $this->request->getFile('excel');
+		var_dump($file);die;
+
+		if ($file->isValid() && !$file->hasMoved()) {
+			// Load file Excel
+			$render = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+			
+			$spreadsheet = $render->load($spreadsheet);
+			// Ambil data dari lembar kerja pertama (Sheet)
+			// $worksheet = $spreadsheet->getActiveSheet();
+			$data = $spreadsheet->getActiveSheet()->toArray();
+
+			// Lakukan sesuatu dengan data yang diimpor
+			foreach ($data as $row) {
+				// Lakukan sesuatu dengan setiap baris data
+				print_r($row); // contoh: tampilkan data ke layar
+			}
+		} else {
+			// Kesalahan unggah file Excel
+			echo 'Terjadi kesalahan saat mengunggah file Excel.';
+		}
 	}
 }

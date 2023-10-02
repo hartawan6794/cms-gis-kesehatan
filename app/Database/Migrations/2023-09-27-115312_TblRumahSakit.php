@@ -12,6 +12,7 @@ class TblRumahSakit extends Migration
             'id_rs' => [
                 'type' => 'TINYINT',
                 'unsigned' => 3,
+                'auto_increment' => true
             ],
             'nama_rs' => [
                 'type' => 'VARCHAR',
@@ -38,7 +39,7 @@ class TblRumahSakit extends Migration
                 'constraint' => '255',
                 'null' => true,
             ],
-            'id_jadwal' => [
+            'is_jadwal' => [
                 'type' => 'TINYINT',
                 'constraint' => 3,
                 'null' => true,

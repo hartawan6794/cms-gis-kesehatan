@@ -37,25 +37,26 @@ class Rsia extends BaseController
 		$result = $this->rsiaModel->select()->findAll();
 
 		$no = 1;
-
 		foreach ($result as $key => $value) {
 
 			$ops = '<div class="btn-group">';
 			$ops .= '<button type="button" class=" btn btn-sm dropdown-toggle btn-info" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">';
 			$ops .= '<i class="fa-solid fa-pen-square"></i>  </button>';
 			$ops .= '<div class="dropdown-menu">';
-			$ops .= '<a class="dropdown-item text-info" onClick="save(' . $value->id_rsia . ')"><i class="fa-solid fa-pen-to-square"></i>   ' .  lang("App.edit")  . '</a>';
-			$ops .= '<a class="dropdown-item text-orange" ><i class="fa-solid fa-copy"></i>   ' .  lang("App.copy")  . '</a>';
+			$ops .= '<a class="dropdown-item text-info" onClick="save(' . $value->id_rsia . ')"><i class="fa-solid fa-pen-to-square"></i>   ' .  lang("Ubah")  . '</a>';
+			// $ops .= '<a class="dropdown-item text-orange" ><i class="fa-solid fa-copy"></i>   ' .  lang("App.copy")  . '</a>';
 			$ops .= '<div class="dropdown-divider"></div>';
-			$ops .= '<a class="dropdown-item text-danger" onClick="remove(' . $value->id_rsia . ')"><i class="fa-solid fa-trash"></i>   ' .  lang("App.delete")  . '</a>';
+			$ops .= '<a class="dropdown-item text-danger" onClick="remove(' . $value->id_rsia . ')"><i class="fa-solid fa-trash"></i>   ' .  lang("Hapus")  . '</a>';
 			$ops .= '</div></div>';
 
 			$data['data'][$key] = array(
 				$no,
 				$value->nama_rsia,
 				$value->kecamatan,
+				$value->deskripsi,
 				$value->Latitude,
-				$value->longitude,
+				$value->longitude,				
+				'<img src="' . base_url('/img/rsia/' . $value->gambar) . '" alt="' . $value->gambar . '" style="width:120px">',
 				$value->created_at,
 				$value->updated_at,
 
@@ -63,7 +64,6 @@ class Rsia extends BaseController
 			);
 
 			$no++;
-
 		}
 
 		return $this->response->setJSON($data);
@@ -92,19 +92,27 @@ class Rsia extends BaseController
 		$fields['id_rsia'] = $this->request->getPost('id_rsia');
 		$fields['nama_rsia'] = $this->request->getPost('nama_rsia');
 		$fields['kecamatan'] = $this->request->getPost('kecamatan');
+		$fields['deskripsi'] = $this->request->getPost('deskripsi');
 		$fields['Latitude'] = $this->request->getPost('Latitude');
 		$fields['longitude'] = $this->request->getPost('longitude');
-		$fields['created_at'] = $this->request->getPost('created_at');
-		$fields['updated_at'] = $this->request->getPost('updated_at');
-
+		$gambar = $this->request->getFile('gambar');
+		$fields['created_at'] =  date('Y-m-d H:i:s');
 
 		$this->validation->setRules([
-			'nama_rsia' => ['label' => 'Nama rsia', 'rules' => 'required|min_length[0]|max_length[255]'],
-			'kecamatan' => ['label' => 'Kecamatan', 'rules' => 'required|min_length[0]|max_length[255]'],
-			'Latitude' => ['label' => 'Latitude', 'rules' => 'required|min_length[0]|max_length[255]'],
-			'longitude' => ['label' => 'Longitude', 'rules' => 'required|min_length[0]|max_length[255]'],
-			'created_at' => ['label' => 'Dibuat', 'rules' => 'permit_empty|valid_date|min_length[0]'],
-			'updated_at' => ['label' => 'Diubah', 'rules' => 'permit_empty|valid_date|min_length[0]'],
+			'nama_rsia' => ['label' => 'Nama rsia', 'rules' => 'required'],
+			'kecamatan' => ['label' => 'Kecamatan', 'rules' => 'required'],
+			'deskripsi' => ['label' => 'Deskripsi', 'rules' => 'required'],
+			'Latitude' => ['label' => 'Latitude', 'rules' => 'required'],
+			'longitude' => ['label' => 'Longitude', 'rules' => 'required'],
+			'gambar' => [
+				'label' => 'Gambar',
+				'rules' => 'uploaded[gambar]|is_image[gambar]|mime_in[gambar,image/jpg,image/jpeg,image/png]|max_size[gambar,1024]',
+				'errors' => [
+					'max_size' => 'Ukuran file harus maksimal 1Mb',
+					'mime_in' => 'Harap masukkan file berupa gambar (jpg, jpeg, png)',
+					'is_image' => 'Harap masukkan file berupa gambar'
+				]
+			],
 
 		]);
 
@@ -114,7 +122,12 @@ class Rsia extends BaseController
 			$response['messages'] = $this->validation->getErrors(); //Show Error in Input Form
 
 		} else {
+			if ($gambar->getName() != '') {
 
+				$fileName = 'rsia-' . $gambar->getRandomName();
+				$fields['gambar'] = $fileName;
+				$gambar->move(WRITEPATH . '../public/img/rsia', $fileName);
+			}
 			if ($this->rsiaModel->insert($fields)) {
 
 				$response['success'] = true;
@@ -136,21 +149,32 @@ class Rsia extends BaseController
 		$fields['id_rsia'] = $this->request->getPost('id_rsia');
 		$fields['nama_rsia'] = $this->request->getPost('nama_rsia');
 		$fields['kecamatan'] = $this->request->getPost('kecamatan');
+		$fields['deskripsi'] = $this->request->getPost('deskripsi');
 		$fields['Latitude'] = $this->request->getPost('Latitude');
 		$fields['longitude'] = $this->request->getPost('longitude');
-		$fields['created_at'] = $this->request->getPost('created_at');
-		$fields['updated_at'] = $this->request->getPost('updated_at');
+		$gambar = $this->request->getFile('gambar');
+		$fields['updated_at'] =  date('Y-m-d H:i:s');
 
 
 		$this->validation->setRules([
 			'nama_rsia' => ['label' => 'Nama rsia', 'rules' => 'required|min_length[0]|max_length[255]'],
 			'kecamatan' => ['label' => 'Kecamatan', 'rules' => 'required|min_length[0]|max_length[255]'],
+			'deskripsi' => ['label' => 'Deskripsi', 'rules' => 'required|min_length[0]|max_length[255]'],
 			'Latitude' => ['label' => 'Latitude', 'rules' => 'required|min_length[0]|max_length[255]'],
 			'longitude' => ['label' => 'Longitude', 'rules' => 'required|min_length[0]|max_length[255]'],
-			'created_at' => ['label' => 'Dibuat', 'rules' => 'permit_empty|valid_date|min_length[0]'],
-			'updated_at' => ['label' => 'Diubah', 'rules' => 'permit_empty|valid_date|min_length[0]'],
+			'gambar' => [
+				'label' => 'Gambar',
+				'rules' => 'uploaded[gambar]|is_image[gambar]|mime_in[gambar,image/jpg,image/jpeg,image/png]|max_size[gambar,1024]',
+				'errors' => [
+					'max_size' => 'Ukuran file harus maksimal 1Mb',
+					'mime_in' => 'Harap masukkan file berupa gambar (jpg, jpeg, png)',
+					'is_image' => 'Harap masukkan file berupa gambar'
+				]
+			],
 
 		]);
+
+		$data = $this->rsiaModel->select()->where('id_rsia', $fields['id_rsia'])->first();
 
 		if ($this->validation->run($fields) == FALSE) {
 
@@ -158,6 +182,17 @@ class Rsia extends BaseController
 			$response['messages'] = $this->validation->getErrors(); //Show Error in Input Form
 
 		} else {
+
+			if ($gambar->getName() != '') {
+
+				//ketika file ada, menghapus file lama
+				if (file_exists('img/rsia/' . $data->gambar)) {
+					unlink('img/rsia/' . $data->gambar);
+				}
+				$fileName = 'rsia-' . $gambar->getRandomName();
+				$fields['gambar'] = $fileName;
+				$gambar->move(WRITEPATH . '../public/img/rsia', $fileName);
+			}
 
 			if ($this->rsiaModel->update($fields['id_rsia'], $fields)) {
 

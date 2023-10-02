@@ -12,6 +12,7 @@ class TblPuskesmas extends Migration
             'id_puskesmas' => [
                 'type' => 'TINYINT',
                 'unsigned' => 3,
+                'auto_increment' => true
             ],
             'nama_puskesmas' => [
                 'type' => 'VARCHAR',
