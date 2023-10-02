@@ -21,6 +21,10 @@ class TblRumahSakit extends Migration
                 'type' => 'VARCHAR',
                 'constraint' => '255'
             ],
+            'deskripsi' => [
+                'type' => 'VARCHAR',
+                'constraint' => '255'
+            ],
             'Latitude' => [
                 'type' => 'VARCHAR',
                 'constraint' => '255'
@@ -28,6 +32,16 @@ class TblRumahSakit extends Migration
             'longitude' => [
                 'type' => 'VARCHAR',
                 'constraint' => '255'
+            ],
+            'gambar' => [
+                'type' => 'VARCHAR',
+                'constraint' => '255',
+                'null' => true,
+            ],
+            'id_jadwal' => [
+                'type' => 'TINYINT',
+                'constraint' => 3,
+                'null' => true,
             ],
             'created_at' => [
                 'type'    => 'TIMESTAMP',
@@ -50,6 +64,6 @@ class TblRumahSakit extends Migration
 
     public function down()
     {
-        $this->forge->dropTable('tbl_user');
+        $this->forge->dropTable('tbl_rumah_sakit');
     }
 }

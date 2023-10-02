@@ -21,6 +21,10 @@ class TblPuskesmas extends Migration
                 'type' => 'VARCHAR',
                 'constraint' => '255'
             ],
+            'deskripsi' => [
+                'type' => 'VARCHAR',
+                'constraint' => '255'
+            ],
             'Latitude' => [
                 'type' => 'VARCHAR',
                 'constraint' => '255'
@@ -28,6 +32,15 @@ class TblPuskesmas extends Migration
             'longitude' => [
                 'type' => 'VARCHAR',
                 'constraint' => '255'
+            ],
+            'gambar' => [
+                'type' => 'VARCHAR',
+                'null' => true,
+                'constraint' => '255'
+            ],'is_jadwal' => [
+                'type' => 'TINYINT',
+                'null' => true,
+                'constraint' => 3
             ],
             'created_at' => [
                 'type'    => 'TIMESTAMP',
