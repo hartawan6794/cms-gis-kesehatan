@@ -10,7 +10,7 @@ class KlinikModel extends Model {
 	protected $primaryKey = 'id_klinik';
 	protected $returnType = 'object';
 	protected $useSoftDeletes = false;
-	protected $allowedFields = ['nama_klinik', 'kecamatan', 'Latitude', 'longitude', 'created_at', 'updated_at'];
+	protected $allowedFields = ['nama_klinik', 'kecamatan', 'deskripsi', 'Latitude', 'longitude', 'gambar', 'is_jadwal', 'created_at', 'updated_at'];
 	protected $useTimestamps = false;
 	protected $createdField  = 'created_at';
 	protected $updatedField  = 'updated_at';

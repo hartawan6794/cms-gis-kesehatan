@@ -35,7 +35,6 @@ class Puskesmas extends BaseController
 		$response = $data['data'] = array();
 
 		$result = $this->puskesmasModel->select()->findAll();
-
 		$no = 1;
 		foreach ($result as $key => $value) {
 
@@ -43,18 +42,19 @@ class Puskesmas extends BaseController
 			$ops .= '<button type="button" class=" btn btn-sm dropdown-toggle btn-info" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">';
 			$ops .= '<i class="fa-solid fa-pen-square"></i>  </button>';
 			$ops .= '<div class="dropdown-menu">';
-			$ops .= '<a class="dropdown-item text-info" onClick="save(' . $value->id_puskesmas . ')"><i class="fa-solid fa-pen-to-square"></i>   ' .  lang("App.edit")  . '</a>';
-			$ops .= '<a class="dropdown-item text-orange" ><i class="fa-solid fa-copy"></i>   ' .  lang("App.copy")  . '</a>';
+			$ops .= '<a class="dropdown-item text-info" onClick="save(' . $value->id_puskesmas . ')"><i class="fa-solid fa-pen-to-square"></i>   ' .  lang("Ubah")  . '</a>';
 			$ops .= '<div class="dropdown-divider"></div>';
-			$ops .= '<a class="dropdown-item text-danger" onClick="remove(' . $value->id_puskesmas . ')"><i class="fa-solid fa-trash"></i>   ' .  lang("App.delete")  . '</a>';
+			$ops .= '<a class="dropdown-item text-danger" onClick="remove(' . $value->id_puskesmas . ')"><i class="fa-solid fa-trash"></i>   ' .  lang("Hapus")  . '</a>';
 			$ops .= '</div></div>';
 
 			$data['data'][$key] = array(
 				$no,
 				$value->nama_puskesmas,
 				$value->kecamatan,
+				$value->deskripsi,
 				$value->Latitude,
 				$value->longitude,
+				'<img src="' . base_url('/img/puskesmas/' . $value->gambar) . '" alt="' . $value->gambar . '" style="width:120px">',
 				$value->created_at,
 				$value->updated_at,
 
@@ -89,20 +89,27 @@ class Puskesmas extends BaseController
 		$fields['id_puskesmas'] = $this->request->getPost('id_puskesmas');
 		$fields['nama_puskesmas'] = $this->request->getPost('nama_puskesmas');
 		$fields['kecamatan'] = $this->request->getPost('kecamatan');
+		$fields['deskripsi'] = $this->request->getPost('deskripsi');
 		$fields['Latitude'] = $this->request->getPost('Latitude');
 		$fields['longitude'] = $this->request->getPost('longitude');
-		$fields['created_at'] = $this->request->getPost('created_at');
-		$fields['updated_at'] = $this->request->getPost('updated_at');
-
+		$gambar = $this->request->getFile('gambar');
+		$fields['created_at'] = date('Y-m-d H:i:s');
 
 		$this->validation->setRules([
-			'nama_puskesmas' => ['label' => 'Nama puskesmas', 'rules' => 'required|min_length[0]|max_length[255]'],
-			'kecamatan' => ['label' => 'Kecamatan', 'rules' => 'required|min_length[0]|max_length[255]'],
-			'Latitude' => ['label' => 'Latitude', 'rules' => 'required|min_length[0]|max_length[255]'],
-			'longitude' => ['label' => 'Longitude', 'rules' => 'required|min_length[0]|max_length[255]'],
-			'created_at' => ['label' => 'Dibuat', 'rules' => 'permit_empty|valid_date|min_length[0]'],
-			'updated_at' => ['label' => 'Diubah', 'rules' => 'permit_empty|valid_date|min_length[0]'],
-
+			'nama_puskesmas' => ['label' => 'Nama puskesmas', 'rules' => 'required'],
+			'kecamatan' => ['label' => 'Kecamatan', 'rules' => 'required'],
+			'deskripsi' => ['label' => 'Deskripsi', 'rules' => 'required'],
+			'Latitude' => ['label' => 'Latitude', 'rules' => 'required'],
+			'longitude' => ['label' => 'Longitude', 'rules' => 'required'],
+			'gambar' => [
+				'label' => 'Gambar',
+				'rules' => 'uploaded[gambar]|is_image[gambar]|mime_in[gambar,image/jpg,image/jpeg,image/png]|max_size[gambar,1024]',
+				'errors' => [
+					'max_size' => 'Ukuran file harus maksimal 1Mb',
+					'mime_in' => 'Harap masukkan file berupa gambar (jpg, jpeg, png)',
+					'is_image' => 'Harap masukkan file berupa gambar'
+				]
+			],
 		]);
 
 		if ($this->validation->run($fields) == FALSE) {
@@ -111,6 +118,13 @@ class Puskesmas extends BaseController
 			$response['messages'] = $this->validation->getErrors(); //Show Error in Input Form
 
 		} else {
+
+			if ($gambar->getName() != '') {
+
+				$fileName = 'puskesmas-' . $gambar->getRandomName();
+				$fields['gambar'] = $fileName;
+				$gambar->move(WRITEPATH . '../public/img/puskesmas', $fileName);
+			}
 
 			if ($this->puskesmasModel->insert($fields)) {
 
@@ -133,19 +147,29 @@ class Puskesmas extends BaseController
 		$fields['id_puskesmas'] = $this->request->getPost('id_puskesmas');
 		$fields['nama_puskesmas'] = $this->request->getPost('nama_puskesmas');
 		$fields['kecamatan'] = $this->request->getPost('kecamatan');
+		$fields['deskripsi'] = $this->request->getPost('deskripsi');
 		$fields['Latitude'] = $this->request->getPost('Latitude');
 		$fields['longitude'] = $this->request->getPost('longitude');
-		$fields['created_at'] = $this->request->getPost('created_at');
-		$fields['updated_at'] = $this->request->getPost('updated_at');
+		$gambar = $this->request->getFile('gambar');
+		$fields['updated_at'] =  date('Y-m-d H:i:s');
 
+		$data = $this->puskesmasModel->select()->where('id_puskesmas', $fields['id_puskesmas'])->first();
 
 		$this->validation->setRules([
 			'nama_puskesmas' => ['label' => 'Nama puskesmas', 'rules' => 'required|min_length[0]|max_length[255]'],
 			'kecamatan' => ['label' => 'Kecamatan', 'rules' => 'required|min_length[0]|max_length[255]'],
+			'deskripsi' => ['label' => 'Deskripsi', 'rules' => 'required|min_length[0]|max_length[255]'],
 			'Latitude' => ['label' => 'Latitude', 'rules' => 'required|min_length[0]|max_length[255]'],
 			'longitude' => ['label' => 'Longitude', 'rules' => 'required|min_length[0]|max_length[255]'],
-			'created_at' => ['label' => 'Dibuat', 'rules' => 'permit_empty|valid_date|min_length[0]'],
-			'updated_at' => ['label' => 'Diubah', 'rules' => 'permit_empty|valid_date|min_length[0]'],
+			'gambar' => [
+				'label' => 'Gambar',
+				'rules' => 'uploaded[gambar]|is_image[gambar]|mime_in[gambar,image/jpg,image/jpeg,image/png]|max_size[gambar,1024]',
+				'errors' => [
+					'max_size' => 'Ukuran file harus maksimal 1Mb',
+					'mime_in' => 'Harap masukkan file berupa gambar (jpg, jpeg, png)',
+					'is_image' => 'Harap masukkan file berupa gambar'
+				]
+			],
 
 		]);
 
@@ -155,7 +179,16 @@ class Puskesmas extends BaseController
 			$response['messages'] = $this->validation->getErrors(); //Show Error in Input Form
 
 		} else {
+			if ($gambar->getName() != '') {
 
+				//ketika file ada, menghapus file lama
+				if (file_exists('img/puskesmas/' . $data->gambar)) {
+					unlink('img/puskesmas/' . $data->gambar);
+				}
+				$fileName = 'puskesmas-' . $gambar->getRandomName();
+				$fields['gambar'] = $fileName;
+				$gambar->move(WRITEPATH . '../public/img/puskesmas', $fileName);
+			}
 			if ($this->puskesmasModel->update($fields['id_puskesmas'], $fields)) {
 
 				$response['success'] = true;

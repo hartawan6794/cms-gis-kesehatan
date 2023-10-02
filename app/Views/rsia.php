@@ -20,10 +20,12 @@
       <thead>
         <tr>
           <th>No</th>
-          <th>Nama rsia</th>
+          <th>Nama RSIA</th>
           <th>Kecamatan</th>
+          <th>Deskripsi</th>
           <th>Latitude</th>
           <th>Longitude</th>
+          <th>Gambar</th>
           <th>Dibuat</th>
           <th>Diubah</th>
 
@@ -65,6 +67,12 @@
             </div>
             <div class="col-md-12">
               <div class="form-group mb-3">
+                <label for="deskripsi" class="col-form-label"> Deskripsi: <span class="text-danger">*</span> </label>
+                <input type="text" id="deskripsi" name="deskripsi" class="form-control" placeholder="Deskripsi" minlength="0" maxlength="255" required>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <div class="form-group mb-3">
                 <label for="Latitude" class="col-form-label"> Latitude: <span class="text-danger">*</span> </label>
                 <input type="text" id="Latitude" name="Latitude" class="form-control" placeholder="Latitude" minlength="0" maxlength="255" required>
               </div>
@@ -77,14 +85,8 @@
             </div>
             <div class="col-md-12">
               <div class="form-group mb-3">
-                <label for="created_at" class="col-form-label"> Dibuat: </label>
-                <input type="date" id="created_at" name="created_at" class="form-control" dateISO="true">
-              </div>
-            </div>
-            <div class="col-md-12">
-              <div class="form-group mb-3">
-                <label for="updated_at" class="col-form-label"> Diubah: </label>
-                <input type="date" id="updated_at" name="updated_at" class="form-control" dateISO="true">
+                <label for="gambar" class="col-form-label"> Gambar: </label>
+                <input type="file" id="gambar" name="gambar" class="form-control" placeholder="Gambar" minlength="0" maxlength="255">
               </div>
             </div>
           </div>
@@ -174,8 +176,11 @@
           $("#data-form #id_rsia").val(response.id_rsia);
           $("#data-form #nama_rsia").val(response.nama_rsia);
           $("#data-form #kecamatan").val(response.kecamatan);
+          $("#data-form #deskripsi").val(response.deskripsi);
           $("#data-form #Latitude").val(response.Latitude);
           $("#data-form #longitude").val(response.longitude);
+          $("#data-form #gambar").val(response.gambar);
+          $("#data-form #is_jadwal").val(response.is_jadwal);
           $("#data-form #created_at").val(response.created_at);
           $("#data-form #updated_at").val(response.updated_at);
 
@@ -206,14 +211,16 @@
         }
       },
       submitHandler: function(form) {
-        var form = $('#data-form');
+        // var form = $('#data-form');
         $(".text-danger").remove();
         $.ajax({
           // fixBug get url from global function only
           // get global variable is bug!
           url: getUrl(),
           type: 'post',
-          data: form.serialize(),
+          data: new FormData(form),
+          processData: false,
+          contentType: false,
           cache: false,
           dataType: 'json',
           beforeSend: function() {

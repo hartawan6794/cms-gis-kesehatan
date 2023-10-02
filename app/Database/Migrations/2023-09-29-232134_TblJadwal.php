@@ -11,7 +11,8 @@ class TblJadwal extends Migration
         $fields = [
             'id_jadwal' => [
                 'type' => 'TINYINT',
-                'constraint' => 3
+                'constraint' => 3,
+                'auto_increment' => true
             ],
             'senin' => [
                 'type' => 'varchar',

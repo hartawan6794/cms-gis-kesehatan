@@ -12,6 +12,7 @@ class TblKlinik extends Migration
             'id_klinik' => [
                 'type' => 'TINYINT',
                 'unsigned' => 3,
+                'auto_increment' => true
             ],
             'nama_klinik' => [
                 'type' => 'VARCHAR',

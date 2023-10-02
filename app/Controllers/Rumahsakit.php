@@ -35,26 +35,27 @@ class Rumahsakit extends BaseController
 		$response = $data['data'] = array();
 
 		$result = $this->rumahsakitModel->select()->findAll();
-		$no = 1;
 
+		$no = 1;
 		foreach ($result as $key => $value) {
 
 			$ops = '<div class="btn-group">';
 			$ops .= '<button type="button" class=" btn btn-sm dropdown-toggle btn-info" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">';
 			$ops .= '<i class="fa-solid fa-pen-square"></i>  </button>';
 			$ops .= '<div class="dropdown-menu">';
-			$ops .= '<a class="dropdown-item text-info" onClick="save(' . $value->id_rs . ')"><i class="fa-solid fa-pen-to-square"></i>   ' .  lang("App.edit")  . '</a>';
-			$ops .= '<a class="dropdown-item text-orange" ><i class="fa-solid fa-copy"></i>   ' .  lang("App.copy")  . '</a>';
+			$ops .= '<a class="dropdown-item text-info" onClick="save(' . $value->id_rs . ')"><i class="fa-solid fa-pen-to-square"></i>   ' .  lang("Ubah")  . '</a>';
 			$ops .= '<div class="dropdown-divider"></div>';
-			$ops .= '<a class="dropdown-item text-danger" onClick="remove(' . $value->id_rs . ')"><i class="fa-solid fa-trash"></i>   ' .  lang("App.delete")  . '</a>';
+			$ops .= '<a class="dropdown-item text-danger" onClick="remove(' . $value->id_rs . ')"><i class="fa-solid fa-trash"></i>   ' .  lang("Hapus")  . '</a>';
 			$ops .= '</div></div>';
 
 			$data['data'][$key] = array(
 				$no,
 				$value->nama_rs,
 				$value->kecamatan,
+				$value->deskripsi,
 				$value->Latitude,
 				$value->longitude,
+				'<img src="' . base_url('/img/rumahsakit/' . $value->gambar) . '" alt="' . $value->gambar . '" style="width:120px">',
 				$value->created_at,
 				$value->updated_at,
 
@@ -62,7 +63,6 @@ class Rumahsakit extends BaseController
 			);
 
 			$no++;
-
 		}
 
 		return $this->response->setJSON($data);
@@ -91,20 +91,28 @@ class Rumahsakit extends BaseController
 		$fields['id_rs'] = $this->request->getPost('id_rs');
 		$fields['nama_rs'] = $this->request->getPost('nama_rs');
 		$fields['kecamatan'] = $this->request->getPost('kecamatan');
+		$fields['deskripsi'] = $this->request->getPost('deskripsi');
 		$fields['Latitude'] = $this->request->getPost('Latitude');
 		$fields['longitude'] = $this->request->getPost('longitude');
-		$fields['created_at'] = $this->request->getPost('created_at');
-		$fields['updated_at'] = $this->request->getPost('updated_at');
+		$gambar = $this->request->getFile('gambar');
+		$fields['created_at'] = date('Y-m-d H:i:s');
 
 
 		$this->validation->setRules([
-			'nama_rs' => ['label' => 'Nama rs', 'rules' => 'required|min_length[0]|max_length[255]'],
-			'kecamatan' => ['label' => 'Kecamatan', 'rules' => 'required|min_length[0]|max_length[255]'],
-			'Latitude' => ['label' => 'Latitude', 'rules' => 'required|min_length[0]|max_length[255]'],
-			'longitude' => ['label' => 'Longitude', 'rules' => 'required|min_length[0]|max_length[255]'],
-			'created_at' => ['label' => 'Dibuat', 'rules' => 'permit_empty|valid_date|min_length[0]'],
-			'updated_at' => ['label' => 'Diubah', 'rules' => 'permit_empty|valid_date|min_length[0]'],
-
+			'nama_rs' => ['label' => 'Nama rs', 'rules' => 'required'],
+			'kecamatan' => ['label' => 'Kecamatan', 'rules' => 'required'],
+			'deskripsi' => ['label' => 'Deskripsi', 'rules' => 'required'],
+			'Latitude' => ['label' => 'Latitude', 'rules' => 'required'],
+			'longitude' => ['label' => 'Longitude', 'rules' => 'required'],
+			'gambar' => [
+				'label' => 'Gambar',
+				'rules' => 'uploaded[gambar]|is_image[gambar]|mime_in[gambar,image/jpg,image/jpeg,image/png]|max_size[gambar,1024]',
+				'errors' => [
+					'max_size' => 'Ukuran file harus maksimal 1Mb',
+					'mime_in' => 'Harap masukkan file berupa gambar (jpg, jpeg, png)',
+					'is_image' => 'Harap masukkan file berupa gambar'
+				]
+			],
 		]);
 
 		if ($this->validation->run($fields) == FALSE) {
@@ -113,7 +121,12 @@ class Rumahsakit extends BaseController
 			$response['messages'] = $this->validation->getErrors(); //Show Error in Input Form
 
 		} else {
+			if ($gambar->getName() != '') {
 
+				$fileName = 'klinik-' . $gambar->getRandomName();
+				$fields['gambar'] = $fileName;
+				$gambar->move(WRITEPATH . '../public/img/rumahsakit', $fileName);
+			}
 			if ($this->rumahsakitModel->insert($fields)) {
 
 				$response['success'] = true;
@@ -135,20 +148,29 @@ class Rumahsakit extends BaseController
 		$fields['id_rs'] = $this->request->getPost('id_rs');
 		$fields['nama_rs'] = $this->request->getPost('nama_rs');
 		$fields['kecamatan'] = $this->request->getPost('kecamatan');
+		$fields['deskripsi'] = $this->request->getPost('deskripsi');
 		$fields['Latitude'] = $this->request->getPost('Latitude');
 		$fields['longitude'] = $this->request->getPost('longitude');
-		$fields['created_at'] = $this->request->getPost('created_at');
-		$fields['updated_at'] = $this->request->getPost('updated_at');
+		$gambar = $this->request->getFile('gambar');
+		$fields['updated_at'] =  date('Y-m-d H:i:s');
 
+		$data = $this->rumahsakitModel->select()->where('id_rs', $fields['id_rs'])->first();
 
 		$this->validation->setRules([
-			'nama_rs' => ['label' => 'Nama rs', 'rules' => 'required|min_length[0]|max_length[255]'],
-			'kecamatan' => ['label' => 'Kecamatan', 'rules' => 'required|min_length[0]|max_length[255]'],
-			'Latitude' => ['label' => 'Latitude', 'rules' => 'required|min_length[0]|max_length[255]'],
-			'longitude' => ['label' => 'Longitude', 'rules' => 'required|min_length[0]|max_length[255]'],
-			'created_at' => ['label' => 'Dibuat', 'rules' => 'permit_empty|valid_date|min_length[0]'],
-			'updated_at' => ['label' => 'Diubah', 'rules' => 'permit_empty|valid_date|min_length[0]'],
-
+			'nama_rs' => ['label' => 'Nama rs', 'rules' => 'required'],
+			'kecamatan' => ['label' => 'Kecamatan', 'rules' => 'required'],
+			'deskripsi' => ['label' => 'Deskripsi', 'rules' => 'required'],
+			'Latitude' => ['label' => 'Latitude', 'rules' => 'required'],
+			'longitude' => ['label' => 'Longitude', 'rules' => 'required'],
+			'gambar' => [
+				'label' => 'Gambar',
+				'rules' => 'uploaded[gambar]|is_image[gambar]|mime_in[gambar,image/jpg,image/jpeg,image/png]|max_size[gambar,1024]',
+				'errors' => [
+					'max_size' => 'Ukuran file harus maksimal 1Mb',
+					'mime_in' => 'Harap masukkan file berupa gambar (jpg, jpeg, png)',
+					'is_image' => 'Harap masukkan file berupa gambar'
+				]
+			],
 		]);
 
 		if ($this->validation->run($fields) == FALSE) {
@@ -157,7 +179,16 @@ class Rumahsakit extends BaseController
 			$response['messages'] = $this->validation->getErrors(); //Show Error in Input Form
 
 		} else {
+			if ($gambar->getName() != '') {
 
+				//ketika file ada, menghapus file lama
+				if (file_exists('img/rumahsakit/' . $data->gambar)) {
+					unlink('img/rumahsakit/' . $data->gambar);
+				}
+				$fileName = 'rumahsakit-' . $gambar->getRandomName();
+				$fields['gambar'] = $fileName;
+				$gambar->move(WRITEPATH . '../public/img/rumahsakit', $fileName);
+			}
 			if ($this->rumahsakitModel->update($fields['id_rs'], $fields)) {
 
 				$response['success'] = true;
