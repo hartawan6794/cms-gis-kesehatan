@@ -123,7 +123,7 @@ class Rumahsakit extends BaseController
 		} else {
 			if ($gambar->getName() != '') {
 
-				$fileName = 'klinik-' . $gambar->getRandomName();
+				$fileName = 'rumahsakit-' . $gambar->getRandomName();
 				$fields['gambar'] = $fileName;
 				$gambar->move(WRITEPATH . '../public/img/rumahsakit', $fileName);
 			}
@@ -132,7 +132,6 @@ class Rumahsakit extends BaseController
 				$response['success'] = true;
 				$response['messages'] = lang("Berhasil menambahkan data");
 			} else {
-
 				$response['success'] = false;
 				$response['messages'] = lang("Gagal menambahkan data");
 			}
