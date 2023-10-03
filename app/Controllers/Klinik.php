@@ -53,6 +53,7 @@ class Klinik extends BaseController
 				$no,
 				$value->nama_klinik,
 				$value->kecamatan,
+				$value->notelp,
 				$value->deskripsi,
 				$value->Latitude,
 				$value->longitude,
@@ -95,6 +96,7 @@ class Klinik extends BaseController
 		$fields['deskripsi'] = $this->request->getPost('deskripsi');
 		$fields['Latitude'] = $this->request->getPost('Latitude');
 		$fields['longitude'] = $this->request->getPost('longitude');
+		$fields['notelp'] = $this->request->getPost('notelp');
 		$gambar = $this->request->getFile('gambar');
 		$fields['created_at'] = date('Y-m-d H:i:s');
 		// $fields['updated_at'] = $this->request->getPost('updated_at');
@@ -103,7 +105,7 @@ class Klinik extends BaseController
 		$this->validation->setRules([
 			'nama_klinik' => ['label' => 'Nama klinik', 'rules' => 'required'],
 			'kecamatan' => ['label' => 'Kecamatan', 'rules' => 'required'],
-			'deskripsi' => ['label' => 'Deskripsi', 'rules' => 'required'],
+			'notelp' => ['label' => 'Notelp', 'rules' => 'required'],
 			'Latitude' => ['label' => 'Latitude', 'rules' => 'required'],
 			'longitude' => ['label' => 'Longitude', 'rules' => 'required'],
 			'gambar' => [
@@ -158,6 +160,7 @@ class Klinik extends BaseController
 		$fields['deskripsi'] = $this->request->getPost('deskripsi');
 		$fields['Latitude'] = $this->request->getPost('Latitude');
 		$fields['longitude'] = $this->request->getPost('longitude');
+		$fields['notelp'] = $this->request->getPost('notelp');
 		$gambar = $this->request->getFile('gambar');
 		$fields['updated_at'] =  date('Y-m-d H:i:s');
 
@@ -166,12 +169,12 @@ class Klinik extends BaseController
 		$this->validation->setRules([
 			'nama_klinik' => ['label' => 'Nama klinik', 'rules' => 'required'],
 			'kecamatan' => ['label' => 'Kecamatan', 'rules' => 'required'],
-			'deskripsi' => ['label' => 'Deskripsi', 'rules' => 'required'],
+			'notelp' => ['label' => 'Notelp', 'rules' => 'required'],
 			'Latitude' => ['label' => 'Latitude', 'rules' => 'required'],
 			'longitude' => ['label' => 'Longitude', 'rules' => 'required'],
 			'gambar' => [
 				'label' => 'Gambar',
-				'rules' => 'uploaded[gambar]|is_image[gambar]|mime_in[gambar,image/jpg,image/jpeg,image/png]|max_size[gambar,1024]',
+				'rules' => 'is_image[gambar]|mime_in[gambar,image/jpg,image/jpeg,image/png]|max_size[gambar,1024]',
 				'errors' => [
 					'max_size' => 'Ukuran file harus maksimal 1Mb',
 					'mime_in' => 'Harap masukkan file berupa gambar (jpg, jpeg, png)',
@@ -241,12 +244,13 @@ class Klinik extends BaseController
 	public function import()
 	{ // Ambil file Excel dari form unggahan
 		$file = $this->request->getFile('excel');
-		var_dump($file);die;
+		var_dump($file);
+		die;
 
 		if ($file->isValid() && !$file->hasMoved()) {
 			// Load file Excel
 			$render = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
-			
+
 			$spreadsheet = $render->load($spreadsheet);
 			// Ambil data dari lembar kerja pertama (Sheet)
 			// $worksheet = $spreadsheet->getActiveSheet();

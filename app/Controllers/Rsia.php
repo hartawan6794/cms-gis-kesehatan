@@ -53,6 +53,7 @@ class Rsia extends BaseController
 				$no,
 				$value->nama_rsia,
 				$value->kecamatan,
+				$value->notelp,
 				$value->deskripsi,
 				$value->Latitude,
 				$value->longitude,				
@@ -92,6 +93,7 @@ class Rsia extends BaseController
 		$fields['id_rsia'] = $this->request->getPost('id_rsia');
 		$fields['nama_rsia'] = $this->request->getPost('nama_rsia');
 		$fields['kecamatan'] = $this->request->getPost('kecamatan');
+		$fields['notelp'] = $this->request->getPost('notelp');
 		$fields['deskripsi'] = $this->request->getPost('deskripsi');
 		$fields['Latitude'] = $this->request->getPost('Latitude');
 		$fields['longitude'] = $this->request->getPost('longitude');
@@ -101,7 +103,7 @@ class Rsia extends BaseController
 		$this->validation->setRules([
 			'nama_rsia' => ['label' => 'Nama rsia', 'rules' => 'required'],
 			'kecamatan' => ['label' => 'Kecamatan', 'rules' => 'required'],
-			'deskripsi' => ['label' => 'Deskripsi', 'rules' => 'required'],
+			'notelp' => ['label' => 'Notelp', 'rules' => 'required'],
 			'Latitude' => ['label' => 'Latitude', 'rules' => 'required'],
 			'longitude' => ['label' => 'Longitude', 'rules' => 'required'],
 			'gambar' => [
@@ -149,7 +151,8 @@ class Rsia extends BaseController
 		$fields['id_rsia'] = $this->request->getPost('id_rsia');
 		$fields['nama_rsia'] = $this->request->getPost('nama_rsia');
 		$fields['kecamatan'] = $this->request->getPost('kecamatan');
-		$fields['deskripsi'] = $this->request->getPost('deskripsi');
+		$fields['deskripsi'] = $this->request->getPost('deskripsi');		
+		$fields['notelp'] = $this->request->getPost('notelp');
 		$fields['Latitude'] = $this->request->getPost('Latitude');
 		$fields['longitude'] = $this->request->getPost('longitude');
 		$gambar = $this->request->getFile('gambar');
@@ -157,14 +160,14 @@ class Rsia extends BaseController
 
 
 		$this->validation->setRules([
-			'nama_rsia' => ['label' => 'Nama rsia', 'rules' => 'required|min_length[0]|max_length[255]'],
-			'kecamatan' => ['label' => 'Kecamatan', 'rules' => 'required|min_length[0]|max_length[255]'],
-			'deskripsi' => ['label' => 'Deskripsi', 'rules' => 'required|min_length[0]|max_length[255]'],
-			'Latitude' => ['label' => 'Latitude', 'rules' => 'required|min_length[0]|max_length[255]'],
-			'longitude' => ['label' => 'Longitude', 'rules' => 'required|min_length[0]|max_length[255]'],
+			'nama_rsia' => ['label' => 'Nama rsia', 'rules' => 'required'],
+			'kecamatan' => ['label' => 'Kecamatan', 'rules' => 'required'],
+			'notelp' => ['label' => 'Notelp', 'rules' => 'required'],
+			'Latitude' => ['label' => 'Latitude', 'rules' => 'required'],
+			'longitude' => ['label' => 'Longitude', 'rules' => 'required'],
 			'gambar' => [
 				'label' => 'Gambar',
-				'rules' => 'uploaded[gambar]|is_image[gambar]|mime_in[gambar,image/jpg,image/jpeg,image/png]|max_size[gambar,1024]',
+				'rules' => 'is_image[gambar]|mime_in[gambar,image/jpg,image/jpeg,image/png]|max_size[gambar,1024]',
 				'errors' => [
 					'max_size' => 'Ukuran file harus maksimal 1Mb',
 					'mime_in' => 'Harap masukkan file berupa gambar (jpg, jpeg, png)',

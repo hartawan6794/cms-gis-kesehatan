@@ -52,6 +52,7 @@ class Rumahsakit extends BaseController
 				$no,
 				$value->nama_rs,
 				$value->kecamatan,
+				$value->notelp,
 				$value->deskripsi,
 				$value->Latitude,
 				$value->longitude,
@@ -91,6 +92,7 @@ class Rumahsakit extends BaseController
 		$fields['id_rs'] = $this->request->getPost('id_rs');
 		$fields['nama_rs'] = $this->request->getPost('nama_rs');
 		$fields['kecamatan'] = $this->request->getPost('kecamatan');
+		$fields['notelp'] = $this->request->getPost('notelp');
 		$fields['deskripsi'] = $this->request->getPost('deskripsi');
 		$fields['Latitude'] = $this->request->getPost('Latitude');
 		$fields['longitude'] = $this->request->getPost('longitude');
@@ -101,7 +103,7 @@ class Rumahsakit extends BaseController
 		$this->validation->setRules([
 			'nama_rs' => ['label' => 'Nama rs', 'rules' => 'required'],
 			'kecamatan' => ['label' => 'Kecamatan', 'rules' => 'required'],
-			'deskripsi' => ['label' => 'Deskripsi', 'rules' => 'required'],
+			'notelp' => ['label' => 'Notelp', 'rules' => 'required'],
 			'Latitude' => ['label' => 'Latitude', 'rules' => 'required'],
 			'longitude' => ['label' => 'Longitude', 'rules' => 'required'],
 			'gambar' => [
@@ -147,6 +149,7 @@ class Rumahsakit extends BaseController
 		$fields['id_rs'] = $this->request->getPost('id_rs');
 		$fields['nama_rs'] = $this->request->getPost('nama_rs');
 		$fields['kecamatan'] = $this->request->getPost('kecamatan');
+		$fields['notelp'] = $this->request->getPost('notelp');
 		$fields['deskripsi'] = $this->request->getPost('deskripsi');
 		$fields['Latitude'] = $this->request->getPost('Latitude');
 		$fields['longitude'] = $this->request->getPost('longitude');
@@ -158,12 +161,12 @@ class Rumahsakit extends BaseController
 		$this->validation->setRules([
 			'nama_rs' => ['label' => 'Nama rs', 'rules' => 'required'],
 			'kecamatan' => ['label' => 'Kecamatan', 'rules' => 'required'],
-			'deskripsi' => ['label' => 'Deskripsi', 'rules' => 'required'],
+			'notelp' => ['label' => 'Notelp', 'rules' => 'required'],
 			'Latitude' => ['label' => 'Latitude', 'rules' => 'required'],
 			'longitude' => ['label' => 'Longitude', 'rules' => 'required'],
 			'gambar' => [
 				'label' => 'Gambar',
-				'rules' => 'uploaded[gambar]|is_image[gambar]|mime_in[gambar,image/jpg,image/jpeg,image/png]|max_size[gambar,1024]',
+				'rules' => 'is_image[gambar]|mime_in[gambar,image/jpg,image/jpeg,image/png]|max_size[gambar,1024]',
 				'errors' => [
 					'max_size' => 'Ukuran file harus maksimal 1Mb',
 					'mime_in' => 'Harap masukkan file berupa gambar (jpg, jpeg, png)',
