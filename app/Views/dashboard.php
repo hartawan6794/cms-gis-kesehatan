@@ -79,6 +79,7 @@
                     <th>No</th>
                     <th>Nama</th>
                     <th>Kecamatan</th>
+                    <th>Nomor Telpon</th>
                     <th>Deskripsi</th>
                     <th>Latitude</th>
                     <th>Longitude</th>
