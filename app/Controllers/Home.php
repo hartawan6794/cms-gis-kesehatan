@@ -44,14 +44,13 @@ class Home extends BaseController
 	{
 		$response = $data['data'] = array();
 
-		$sql = "
-		SELECT * FROM tbl_klinik
+		$sql = "SELECT * FROM (SELECT * FROM tbl_klinik
 		UNION ALL
 		SELECT * FROM tbl_puskesmas
 		UNION ALL
 		SELECT * FROM tbl_rumah_sakit
 		UNION ALL
-		SELECT * FROM tbl_rumah_sakit_ibu_anak";
+		SELECT * FROM tbl_rumah_sakit_ibu_anak) z order by created_at DESC";
 		$query = $this->db->query($sql)->getResult();
 		// var_dump($query);
 		$no = 1;

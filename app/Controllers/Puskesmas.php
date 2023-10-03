@@ -51,6 +51,7 @@ class Puskesmas extends BaseController
 				$no,
 				$value->nama_puskesmas,
 				$value->kecamatan,
+				$value->notelp,
 				$value->deskripsi,
 				$value->Latitude,
 				$value->longitude,
@@ -89,6 +90,7 @@ class Puskesmas extends BaseController
 		$fields['id_puskesmas'] = $this->request->getPost('id_puskesmas');
 		$fields['nama_puskesmas'] = $this->request->getPost('nama_puskesmas');
 		$fields['kecamatan'] = $this->request->getPost('kecamatan');
+		$fields['notelp'] = $this->request->getPost('notelp');
 		$fields['deskripsi'] = $this->request->getPost('deskripsi');
 		$fields['Latitude'] = $this->request->getPost('Latitude');
 		$fields['longitude'] = $this->request->getPost('longitude');
@@ -98,7 +100,7 @@ class Puskesmas extends BaseController
 		$this->validation->setRules([
 			'nama_puskesmas' => ['label' => 'Nama puskesmas', 'rules' => 'required'],
 			'kecamatan' => ['label' => 'Kecamatan', 'rules' => 'required'],
-			'deskripsi' => ['label' => 'Deskripsi', 'rules' => 'required'],
+			'notelp' => ['label' => 'Notelp', 'rules' => 'required'],
 			'Latitude' => ['label' => 'Latitude', 'rules' => 'required'],
 			'longitude' => ['label' => 'Longitude', 'rules' => 'required'],
 			'gambar' => [
@@ -147,6 +149,7 @@ class Puskesmas extends BaseController
 		$fields['id_puskesmas'] = $this->request->getPost('id_puskesmas');
 		$fields['nama_puskesmas'] = $this->request->getPost('nama_puskesmas');
 		$fields['kecamatan'] = $this->request->getPost('kecamatan');
+		$fields['notelp'] = $this->request->getPost('notelp');
 		$fields['deskripsi'] = $this->request->getPost('deskripsi');
 		$fields['Latitude'] = $this->request->getPost('Latitude');
 		$fields['longitude'] = $this->request->getPost('longitude');
@@ -156,14 +159,14 @@ class Puskesmas extends BaseController
 		$data = $this->puskesmasModel->select()->where('id_puskesmas', $fields['id_puskesmas'])->first();
 
 		$this->validation->setRules([
-			'nama_puskesmas' => ['label' => 'Nama puskesmas', 'rules' => 'required|min_length[0]|max_length[255]'],
-			'kecamatan' => ['label' => 'Kecamatan', 'rules' => 'required|min_length[0]|max_length[255]'],
-			'deskripsi' => ['label' => 'Deskripsi', 'rules' => 'required|min_length[0]|max_length[255]'],
-			'Latitude' => ['label' => 'Latitude', 'rules' => 'required|min_length[0]|max_length[255]'],
-			'longitude' => ['label' => 'Longitude', 'rules' => 'required|min_length[0]|max_length[255]'],
+			'nama_puskesmas' => ['label' => 'Nama puskesmas', 'rules' => 'required'],
+			'kecamatan' => ['label' => 'Kecamatan', 'rules' => 'required'],
+			'notelp' => ['label' => 'Notelp', 'rules' => 'required'],
+			'Latitude' => ['label' => 'Latitude', 'rules' => 'required'],
+			'longitude' => ['label' => 'Longitude', 'rules' => 'required'],
 			'gambar' => [
 				'label' => 'Gambar',
-				'rules' => 'uploaded[gambar]|is_image[gambar]|mime_in[gambar,image/jpg,image/jpeg,image/png]|max_size[gambar,1024]',
+				'rules' => 'is_image[gambar]|mime_in[gambar,image/jpg,image/jpeg,image/png]|max_size[gambar,1024]',
 				'errors' => [
 					'max_size' => 'Ukuran file harus maksimal 1Mb',
 					'mime_in' => 'Harap masukkan file berupa gambar (jpg, jpeg, png)',

@@ -22,6 +22,7 @@
           <th>No</th>
           <th>Nama Rumah Sakit</th>
           <th>Kecamatan</th>
+          <th>Nomor Telpon</th>
           <th>Deskripsi</th>
           <th>Latitude</th>
           <th>Longitude</th>
@@ -54,38 +55,44 @@
           <div class="row">
             <div class="col-md-12">
               <div class="form-group mb-3">
-                <label for="nama_rs" class="col-form-label"> Nama rs: <span class="text-danger">*</span> </label>
-                <input type="text" id="nama_rs" name="nama_rs" class="form-control" placeholder="Nama rs" minlength="0" maxlength="255" required>
+                <label for="nama_rs" class="col-form-label"> Nama Rumah Sakit: <span class="text-danger">*</span> </label>
+                <input type="text" id="nama_rs" name="nama_rs" class="form-control" placeholder="Nama Rumah Sakit">
               </div>
             </div>
             <div class="col-md-12">
               <div class="form-group mb-3">
                 <label for="kecamatan" class="col-form-label"> Kecamatan: <span class="text-danger">*</span> </label>
-                <input type="text" id="kecamatan" name="kecamatan" class="form-control" placeholder="Kecamatan" minlength="0" maxlength="255" required>
+                <input type="text" id="kecamatan" name="kecamatan" class="form-control" placeholder="Kecamatan">
               </div>
             </div>
             <div class="col-md-12">
               <div class="form-group mb-3">
-                <label for="deskripsi" class="col-form-label"> Deskripsi: <span class="text-danger">*</span> </label>
-                <input type="text" id="deskripsi" name="deskripsi" class="form-control" placeholder="Deskripsi" minlength="0" maxlength="255" required>
+                <label for="notelp" class="col-form-label"> No. Telpon: <span class="text-danger">*</span> </label>
+                <input type="text" id="notelp" name="notelp" class="form-control" placeholder="Nomor Telpon">
+              </div>
+            </div>
+            <div class="col-md-12">
+              <div class="form-group mb-3">
+                <label for="deskripsi" class="col-form-label"> Deskripsi: </label>
+                <input type="text" id="deskripsi" name="deskripsi" class="form-control" placeholder="Deskripsi">
               </div>
             </div>
             <div class="col-md-12">
               <div class="form-group mb-3">
                 <label for="Latitude" class="col-form-label"> Latitude: <span class="text-danger">*</span> </label>
-                <input type="text" id="Latitude" name="Latitude" class="form-control" placeholder="Latitude" minlength="0" maxlength="255" required>
+                <input type="text" id="Latitude" name="Latitude" class="form-control" placeholder="Latitude">
               </div>
             </div>
             <div class="col-md-12">
               <div class="form-group mb-3">
                 <label for="longitude" class="col-form-label"> Longitude: <span class="text-danger">*</span> </label>
-                <input type="text" id="longitude" name="longitude" class="form-control" placeholder="Longitude" minlength="0" maxlength="255" required>
+                <input type="text" id="longitude" name="longitude" class="form-control" placeholder="Longitude">
               </div>
             </div>
             <div class="col-md-12">
               <div class="form-group mb-3">
                 <label for="gambar" class="col-form-label"> Gambar: </label>
-                <input type="file" id="gambar" name="gambar" class="form-control" placeholder="Gambar" minlength="0" maxlength="255">
+                <input type="file" id="gambar" name="gambar" class="form-control" placeholder="Gambar" >
               </div>
             </div>
           </div>
@@ -178,11 +185,7 @@
           $("#data-form #deskripsi").val(response.deskripsi);
           $("#data-form #Latitude").val(response.Latitude);
           $("#data-form #longitude").val(response.longitude);
-          $("#data-form #gambar").val(response.gambar);
-          $("#data-form #is_jadwal").val(response.is_jadwal);
-          $("#data-form #created_at").val(response.created_at);
-          $("#data-form #updated_at").val(response.updated_at);
-
+          $("#data-form #notelp").val(response.notelp);
         }
       });
     }
