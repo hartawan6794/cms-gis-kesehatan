@@ -65,6 +65,7 @@ class Home extends BaseController
 				$no,
 				$value->nama_klinik,
 				$value->kecamatan,
+				$value->notelp,
 				$value->deskripsi,
 				$value->Latitude,
 				$value->longitude,

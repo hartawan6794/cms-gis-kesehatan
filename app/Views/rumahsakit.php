@@ -68,7 +68,7 @@
             <div class="col-md-12">
               <div class="form-group mb-3">
                 <label for="notelp" class="col-form-label"> No. Telpon: <span class="text-danger">*</span> </label>
-                <input type="text" id="notelp" name="notelp" class="form-control" placeholder="Nomor Telpon">
+                <input type="text" id="notelp" name="notelp" class="form-control" placeholder="Nomor Telpon" maxlength="12">
               </div>
             </div>
             <div class="col-md-12">
