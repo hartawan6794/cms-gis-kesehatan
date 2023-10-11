@@ -29,7 +29,7 @@ $routes->setAutoRoute(true);
 
 // We get a performance increase by specifying the default
 // route since we don't have to scan directories.
-$routes->get('/', 'Home::index');
+$routes->get('/',  'Home::index',['filter' => 'auth']);
 $routes->group('api', ['namespace' => 'App\Controllers'], function ($routes) {
     $routes->get('data', 'ApiController::index');
     $routes->get('auth', 'ApiController::authenticate');
