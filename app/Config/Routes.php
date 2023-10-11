@@ -36,6 +36,36 @@ $routes->group('api', ['namespace' => 'App\Controllers'], function ($routes) {
     $routes->get('protected', 'ApiController::protectedData');
 });
 
+$routes->group('user', ['filter' => 'auth'], function ($routes) {
+    $routes->get('/', 'User::index');
+    $routes->get('getall', 'User::getAll');
+});
+
+$routes->group('home', ['filter' => 'auth'], function ($routes) {
+    $routes->get('/', 'Home::index');
+    $routes->get('getall', 'Home::getAll');
+});
+
+$routes->group('rumahsakit', ['filter' => 'auth'], function ($routes) {
+    $routes->get('/', 'Rumahsakit::index');
+    $routes->get('getall', 'Rumahsakit::getAll');
+});
+
+$routes->group('rsia', ['filter' => 'auth'], function ($routes) {
+    $routes->get('/', 'Rsia::index');
+    $routes->get('getall', 'Rsia::getAll');
+});
+
+$routes->group('klinik', ['filter' => 'auth'], function ($routes) {
+    $routes->get('/', 'Klinik::index');
+    $routes->get('getall', 'Klinik::getAll');
+});
+
+$routes->group('puskesmas', ['filter' => 'auth'], function ($routes) {
+    $routes->get('/', 'Puskesmas::index');
+    $routes->get('getall', 'Puskesmas::getAll');
+});
+
 /*
  * --------------------------------------------------------------------
  * Additional Routing
