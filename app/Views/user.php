@@ -191,11 +191,12 @@
   }
 
   function save(id_user_detail) {
-    
-    $("#data-form #username").prop("enabled", true);
-          $("#data-form #email").prop("enabled", true);
+
     // reset the form 
     $("#data-form")[0].reset();
+
+    $("#data-form #username").prop("disabled", false);
+    $("#data-form #email").prop("disabled", false); 
     $(".form-control").removeClass('is-invalid').removeClass('is-valid');
     if (typeof id_user_detail === 'undefined' || id_user_detail < 1) { //add
       urlController = '<?= base_url($controller . "/add") ?>';
