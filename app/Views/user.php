@@ -118,7 +118,7 @@
             <div class="col-md-6">
               <div class="form-group mb-3">
                 <label for="jns_kelamin" class="col-form-label"> Gender: </label>
-                <select name="jns_kelami" id="jns_kelami" class="form-control">
+                <select name="jns_kelamin" id="jns_kelamin" class="form-control">
                   <option value="">Pilih Jenis Kelamin</option>
                   <option value="Laki-Laki">Laki-laki</option>
                   <option value="Perempuan">Perempuan</option>
