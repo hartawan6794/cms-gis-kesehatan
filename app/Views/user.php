@@ -191,6 +191,9 @@
   }
 
   function save(id_user_detail) {
+    
+    $("#data-form #username").prop("enabled", true);
+          $("#data-form #email").prop("enabled", true);
     // reset the form 
     $("#data-form")[0].reset();
     $(".form-control").removeClass('is-invalid').removeClass('is-valid');
