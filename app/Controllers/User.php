@@ -19,6 +19,7 @@ class User extends BaseController
 		$this->userModel = new UserModel();
 		$this->user = new TbluserModel();
 		$this->validation =  \Config\Services::validation();
+		helper('settings');
 	}
 
 	public function index()
@@ -57,7 +58,7 @@ class User extends BaseController
 				$value->username,
 				$value->nik,
 				$value->nama_lengkap,
-				$value->tgl_lahir,
+				tgl_indo($value->tgl_lahir),
 				$value->tmp_lahir,
 				$value->jns_kelamin,
 				'<img src="' . base_url('/img/user/' . $value->img_user) . '" alt="' . $value->img_user . '" style="width:120px">',
@@ -82,7 +83,7 @@ class User extends BaseController
 
 		if ($this->validation->check($id, 'required|numeric')) {
 
-			$data = $this->userModel->join('tbl_user tu','tu.id_user = tbl_user_detail.id_user_detail')->where('id_user_detail', $id)->first();
+			$data = $this->userModel->join('tbl_user tu', 'tu.id_user = tbl_user_detail.id_user_detail')->where('id_user_detail', $id)->first();
 
 			return $this->response->setJSON($data);
 		} else {
@@ -130,20 +131,20 @@ class User extends BaseController
 			'jns_kelamin' => ['label' => 'Gender', 'rules' => 'permit_empty'],
 			'img_user' => [
 				'label' => 'Gambar',
-				'rules' => 'uploaded[img_user]|is_image[img_user]|mime_in[img_user,image/jpg,image/jpeg,image/png]|max_size[img_user,1024]',
+				'rules' => 'is_image[img_user]|mime_in[img_user,image/jpg,image/jpeg,image/png]|max_size[img_user,1024]',
 				'errors' => [
 					'max_size' => 'Ukuran file harus maksimal 1Mb',
 					'mime_in' => 'Harap masukkan file berupa gambar (jpg, jpeg, png)',
 					'is_image' => 'Harap masukkan file berupa gambar'
 				]
 			],
-			'email' => ['label' => 'Email', 'rules' => 'trim|required|valid_email'],
-			'username' => ['label' => 'Username', 'rules' => 'required|trim'],
+			'email' => ['label' => 'Email', 'rules' => 'trim|required|valid_email|emailExist[email]', 'errors' => [
+				'emailExist' => 'Email telah digunakan'
+			]],
+			'username' => ['label' => 'Username', 'rules' => 'required|trim|userExist[username]', 'errors' => [
+				'userExist' => 'Username telah digunakan'
+			]],
 		]);
-
-		// var_dump($this->validation->run($fields));die;
-
-
 
 		if ($this->validation->run($fields) == FALSE) {
 
@@ -171,7 +172,7 @@ class User extends BaseController
 
 						$response['success'] = true;
 						$response['messages'] = lang("Berhasil menambahkan data");
-					}else {
+					} else {
 
 						$response['success'] = false;
 						$response['messages'] = lang("Gagal menambahkan data");
@@ -196,6 +197,7 @@ class User extends BaseController
 	public function edit()
 	{
 		$response = array();
+		$db = \Config\Database::connect();
 
 		$fields['id_user_detail'] = $this->request->getPost('id_user_detail');
 		$fields['nik'] = $this->request->getPost('nik');
@@ -203,19 +205,43 @@ class User extends BaseController
 		$fields['tgl_lahir'] = $this->request->getPost('tgl_lahir');
 		$fields['tmp_lahir'] = $this->request->getPost('tmp_lahir');
 		$fields['jns_kelamin'] = $this->request->getPost('jns_kelamin');
-		$fields['img_user'] = $this->request->getPost('img_user');
-		$fields['created_at'] = $this->request->getPost('created_at');
-		$fields['updated_at'] = $this->request->getPost('updated_at');
+		$img_user = $this->request->getFile('img_user');
+		$fields['email'] = $this->request->getPost('email');
+		$fields['username'] = $this->request->getPost('username');
+		$fields['password'] = $this->request->getPost('password');
+		$fields['confpassword'] = $this->request->getPost('confpassword');
 
+		$userFields['nik'] = $fields['nik'];
+		$userFields['nama_lengkap'] = $fields['nama_lengkap'];
+		$userFields['tgl_lahir'] = $fields['tgl_lahir'];
+		$userFields['tmp_lahir'] = $fields['tmp_lahir'];
+		$userFields['jns_kelamin'] = $fields['jns_kelamin'];
+		$userFields['updated_at'] = date('Y-m-d H:i:s');
+
+		$user = [
+			// 'email_user' => $fields['email'],
+			// 'username' => $fields['username'],
+			'password' => password_hash($fields['password'], PASSWORD_BCRYPT)
+		];
+
+		$dataImage = $this->userModel->select()->where('id_user_detail', $fields['id_user_detail'])->first();
 
 		$this->validation->setRules([
 			'nik' => ['label' => 'Nik', 'rules' => 'permit_empty|min_length[0]|max_length[20]'],
 			'nama_lengkap' => ['label' => 'Nama lengkap', 'rules' => 'required|min_length[0]|max_length[255]'],
+			'confpassword' => ['label' => 'Password', 'rules' => 'matches[password]', 'errors' => ['matches' => 'Kata sandi tidak sama']],
 			'tgl_lahir' => ['label' => 'Tanggal Lahir', 'rules' => 'permit_empty|valid_date|min_length[0]'],
 			'tmp_lahir' => ['label' => 'Tempat Lahir', 'rules' => 'permit_empty|min_length[0]|max_length[255]'],
 			'jns_kelamin' => ['label' => 'Gender', 'rules' => 'permit_empty|min_length[0]|max_length[50]'],
-			'img_user' => ['label' => 'Gambar', 'rules' => 'permit_empty|min_length[0]|max_length[255]'],
-			'created_at' => ['label' => 'Dibuat', 'rules' => 'permit_empty|valid_date|min_length[0]'],
+			'img_user' => [
+				'label' => 'Gambar',
+				'rules' => 'is_image[img_user]|mime_in[img_user,image/jpg,image/jpeg,image/png]|max_size[img_user,1024]',
+				'errors' => [
+					'max_size' => 'Ukuran file harus maksimal 1Mb',
+					'mime_in' => 'Harap masukkan file berupa gambar (jpg, jpeg, png)',
+					'is_image' => 'Harap masukkan file berupa gambar'
+				]
+			],
 			'updated_at' => ['label' => 'Diubah', 'rules' => 'permit_empty|valid_date|min_length[0]'],
 
 		]);
@@ -226,15 +252,37 @@ class User extends BaseController
 			$response['messages'] = $this->validation->getErrors(); //Show Error in Input Form
 
 		} else {
+			$db->transBegin();
 
-			if ($this->userModel->update($fields['id_user_detail'], $fields)) {
+			try {
+				if ($img_user->getName() != '') {
 
-				$response['success'] = true;
-				$response['messages'] = lang("Berhasil perbarui data");
-			} else {
+					//ketika file ada, menghapus file lama
+					if (file_exists('img/user/' . $dataImage->img_user)) {
+						unlink('img/user/' . $dataImage->img_user);
+					}
+					$fileName = 'user-' . $img_user->getRandomName();
+					$userFields['img_user'] = $fileName;
+					$img_user->move(WRITEPATH . '../public/img/user', $fileName);
+				}
+				if ($this->userModel->update($fields['id_user_detail'], $userFields)) {
 
+					if ($fields['password'] != '' || $fields['password'] != null) {
+						$this->user->update($fields['id_user_detail'], $user);
+					}
+					$response['success'] = true;
+					$response['messages'] = lang("Berhasil perbarui data");
+				} else {
+
+					$response['success'] = false;
+					$response['messages'] = lang("Gagal perbarui data");
+				}
+				$db->transCommit();
+			} catch (\Exception $e) {
 				$response['success'] = false;
-				$response['messages'] = lang("Gagal Perbarui data");
+				$response['messages'] = lang("Gagal perbarui data");
+				// Rollback the transaction if any insert fails
+				$db->transRollback();
 			}
 		}
 
@@ -244,8 +292,11 @@ class User extends BaseController
 	public function remove()
 	{
 		$response = array();
+		$db = \Config\Database::connect();
 
 		$id = $this->request->getPost('id_user_detail');
+
+		// var_dump($id);die;
 
 		if (!$this->validation->check($id, 'required|numeric')) {
 
@@ -253,9 +304,10 @@ class User extends BaseController
 		} else {
 
 			if ($this->userModel->where('id_user_detail', $id)->delete()) {
-
-				$response['success'] = true;
-				$response['messages'] = lang("Berhasil menghapus data");
+				if ($this->user->where('id_user', $id)->delete()) {
+					$response['success'] = true;
+					$response['messages'] = lang("Berhasil menghapus data");
+				}
 			} else {
 
 				$response['success'] = false;
