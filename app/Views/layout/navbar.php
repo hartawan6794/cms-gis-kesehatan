@@ -24,7 +24,7 @@
             <img src="<?= base_url('img/user/'.session()->get('gambar')) ?>" class="img-circle shadow" alt="User Image">
 
             <p>
-              <?= session()->get('username') ?>
+              <?= session()->get('nama_lengkap') ?>
               <!-- <small>Member since Nov. 2012</small> -->
             </p>
           </li>
@@ -34,7 +34,7 @@
           </li> -->
           <!-- Menu Footer-->
           <li class="user-footer">
-            <a href="#" class="btn btn-default btn-flat">Profile</a>
+            <!-- <a href="#" class="btn btn-default btn-flat">Profile</a> -->
             <a href="<?= base_url('login/logout')?>" class="btn btn-default btn-flat float-end sign-out">Sign out</a>
           </li>
         </ul>

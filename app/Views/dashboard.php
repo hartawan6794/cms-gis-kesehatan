@@ -3,8 +3,8 @@
 <?= $this->section("content") ?>
 
 <div class="row">
+    <h1 class="mb-3">Selamat Datang, <?= session()->get('nama_lengkap')?></h1>
     <div class="col-lg-3 col-6">
-
         <div class="small-box bg-info">
             <div class="inner">
                 <h3><?= $rumahsakit ?></h3>
