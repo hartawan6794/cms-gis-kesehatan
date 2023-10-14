@@ -28,7 +28,7 @@ if(!function_exists('settings')){
         // variabel pecahkan 1 = bulan
         // variabel pecahkan 2 = tahun
      
-        return $tanggal[0] == 0 ? "Belum di set"  : $pecahkan[2] . ' ' . $bulan[ (int)$pecahkan[1] ] . ' ' . $pecahkan[0];
+        return $tanggal[0] == 0  ? "Belum di set"  : $pecahkan[2] . ' ' . $bulan[ (int)$pecahkan[1] ] . ' ' . $pecahkan[0];
     }
 
 }
