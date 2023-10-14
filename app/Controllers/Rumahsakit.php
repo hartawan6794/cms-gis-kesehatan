@@ -21,7 +21,6 @@ class Rumahsakit extends BaseController
 
 	public function index()
 	{
-
 		$data = [
 			'controller'    	=> 'rumahsakit',
 			'title'     		=> 'Rumah Sakit'

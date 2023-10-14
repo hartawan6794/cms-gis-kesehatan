@@ -29,12 +29,19 @@ $routes->setAutoRoute(true);
 
 // We get a performance increase by specifying the default
 // route since we don't have to scan directories.
-$routes->get('/',  'Home::index',['filter' => 'auth']);
-$routes->group('api', ['namespace' => 'App\Controllers'], function ($routes) {
-    $routes->get('data', 'ApiController::index');
-    $routes->get('auth', 'ApiController::authenticate');
-    $routes->get('protected', 'ApiController::protectedData');
+
+$routes->group('api', function($routes){
+    $routes->post('login', 'Api\AuthApi::login');
+    $routes->post('register', 'Api\AuthApi::register');
+    $routes->post('user', 'Api\AuthApi::getUser',['filter' => 'jwtFilter']);
 });
+
+$routes->get('/',  'Home::index',['filter' => 'auth']);
+// $routes->group('api', ['namespace' => 'App\Controllers'], function ($routes) {
+//     $routes->get('data', 'ApiController::index');
+//     $routes->get('auth', 'ApiController::authenticate');
+//     $routes->get('protected', 'ApiController::protectedData');
+// });
 
 $routes->group('user', ['filter' => 'auth'], function ($routes) {
     $routes->get('/', 'User::index');

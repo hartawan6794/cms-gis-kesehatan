@@ -6,6 +6,8 @@ namespace App\Controllers;
 use App\Controllers\BaseController;
 use App\Models\TbluserModel;
 use App\Models\UserModel;
+use Config\Services;
+use Firebase\JWT\JWT;
 
 class User extends BaseController
 {
@@ -13,12 +15,14 @@ class User extends BaseController
 	protected $userModel;
 	protected $user;
 	protected $validation;
+	protected $privateKey;
 
 	public function __construct()
 	{
 		$this->userModel = new UserModel();
 		$this->user = new TbluserModel();
-		$this->validation =  \Config\Services::validation();
+		$this->validation =  Services::validation();
+        $this->privateKey = Services::privateKey()['keyServer'];
 		helper('settings');
 	}
 
@@ -58,7 +62,7 @@ class User extends BaseController
 				$value->username,
 				$value->nik,
 				$value->nama_lengkap,
-				tgl_indo($value->tgl_lahir),
+				$value->tgl_lahir ? tgl_indo($value->tgl_lahir) : 'Belum diset',
 				$value->tmp_lahir,
 				$value->jns_kelamin,
 				'<img src="' . base_url('/img/user/' . $value->img_user) . '" alt="' . $value->img_user . '" style="width:120px">',
@@ -115,10 +119,25 @@ class User extends BaseController
 		$userFields['jns_kelamin'] = $fields['jns_kelamin'];
 		$userFields['created_at'] = date('Y-m-d H:i:s');
 
+		$key = $this->privateKey;
+            $iat = time(); // current timestamp value
+            $payload = array(
+                "iss" => "GisKesehatan",
+                "aud" => "GisKesehatan",
+                "sub" => "GisKesehatan",
+                "iat" => $iat, //Time the JWT issued at
+                "data" => [
+                    'email_user'  => $fields['email'],
+                    'username'    => $fields['username'],
+                ],
+            );
+            $token = JWT::encode($payload, $key, 'HS256');
+
 		$user = [
 			'email_user' => $fields['email'],
 			'username' => $fields['username'],
-			'password' => password_hash($fields['password'], PASSWORD_BCRYPT)
+			'password' => password_hash($fields['password'], PASSWORD_BCRYPT),
+			'bearer_token' => $token
 		];
 
 		$this->validation->setRules([
