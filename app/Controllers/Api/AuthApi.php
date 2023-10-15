@@ -17,39 +17,40 @@ class AuthApi extends BaseController
     {
         $this->user = new TbluserModel();
         $this->userDetail = new UserModel();
-
         $this->privateKey = Services::privateKey()['keyServer'];
     }
 
     public function login()
     {
-        $email = $this->request->getPost('email');
-        $password = $this->request->getPost('password');
+        $data = $this->request->getJSON();
 
-        $data = $this->user->where('email_user', $email)->orWhere('username', $email)->first();
+        $db = \Config\Database::connect();
 
-        if ($data) {
-            if (password_verify($password, $data->password)) {
+        $email = $data->email;
+        $password = $data->password;
 
+        $result = $this->user->select('tbl_user.*, tud.nama_lengkap,tud.img_user')->join('tbl_user_detail tud','tbl_user.id_user = tud.id_user_detail')->where('email_user', $email)->orWhere('username', $email)->find();
 
+        if ($result) {
+            if (password_verify($password, $result[0]->password)) {
                 // var_dump
                 $response = [
                     'status'    => true,
                     'message'   => 'Berhasil Mendapatkan Data',
-                    'data'      => $data
+                    'result'     => $result
                 ];
             } else {
                 $response = [
                     'status'    => false,
                     'message'   => 'Password salah',
-                    'data'      => []
+                    'result'      => []
                 ];
             }
         } else {
             $response = [
                 'status'    => false,
                 'message'   => 'Gagal Mendapatkan Data',
-                'data'      => []
+                'result'      => []
             ];
         }
 
@@ -58,49 +59,41 @@ class AuthApi extends BaseController
 
     public function getUser()
     {
-        $email = $this->request->getPost('email');
-        $data = $this->user->where('email_user', $email)->orWhere('username', $email)->first();
+        $data = $this->request->getJSON();
+        $id_user = $data->id_user_detail;
+
+        // $id_user = $this->request->getPost('id_user');
+        $data = $this->userDetail->where('id_user_detail', $id_user)->find();
         if ($data) {
             $response = [
                 'status'    => true,
                 'message'   => 'Berhasil Mendapatkan Data',
-                'data'      => $data,
+                'result'      => $data,
             ];
         } else {
             $response = [
                 'status'    => false,
                 'message'   => 'Gagal Mendapatkan Data',
-                'data'      => []
+                'result'      => []
             ];
         }
 
         return $this->response->setJSON($response);
     }
 
-
     public function register()
     {
         $response = array();
         $db = \Config\Database::connect();
 
-        $fields['id_user_detail'] = $this->request->getPost('id_user_detail');
-        $fields['nik'] = $this->request->getPost('nik');
-        $fields['nama_lengkap'] = $this->request->getPost('nama_lengkap');
-        $fields['tgl_lahir'] = $this->request->getPost('tgl_lahir');
-        $fields['tmp_lahir'] = $this->request->getPost('tmp_lahir');
-        $fields['jns_kelamin'] = $this->request->getPost('jns_kelamin');
-        // $img_user = $this->request->getFile('img_user');
-        $fields['email'] = $this->request->getPost('email');
-        $fields['username'] = $this->request->getPost('username');
-        $fields['password'] = $this->request->getPost('password');
-        $fields['confpassword'] = $this->request->getPost('confpassword');
+        $data = $this->request->getJSON();
+        $nama_lengkap = $data->userDetailModel->nama_lengkap;
+        $email = $data->userModel->email_user;
+        $username = $data->userModel->username;
+        $password = $data->userModel->password;
+        $device_id = $data->userModel->device_id;
 
-        $userFields['nik'] = $fields['nik'];
-        $userFields['nama_lengkap'] = $fields['nama_lengkap'];
-        $userFields['tgl_lahir'] = $fields['tgl_lahir'];
-        $userFields['tmp_lahir'] = $fields['tmp_lahir'];
-        $userFields['jns_kelamin'] = $fields['jns_kelamin'];
-        $userFields['created_at'] = date('Y-m-d H:i:s');
+        $userFields['nama_lengkap'] = $nama_lengkap;
 
         $db->transBegin();
 
@@ -114,17 +107,18 @@ class AuthApi extends BaseController
                 "sub" => "GisKesehatan",
                 "iat" => $iat, //Time the JWT issued at
                 "data" => [
-                    'email_user'  => $fields['email'],
-                    'username'    => $fields['username'],
+                    'email_user'  => $email,
+                    'username'    => $username,
+                    'device_id'   => $device_id
                 ],
             );
             $token = JWT::encode($payload, $key, 'HS256');
 
-            // var_dump($token)
             $user = [
-                'email_user'    => $fields['email'],
-                'username'      => $fields['username'],
-                'password'      => password_hash($fields['password'], PASSWORD_BCRYPT),
+                'email_user'    => $email,
+                'username'      => $username,
+                'password'      => password_hash($password, PASSWORD_BCRYPT),
+                'device_id'   => $device_id,
                 'bearer_token'   => $token
             ];
 
@@ -135,26 +129,89 @@ class AuthApi extends BaseController
                 $userFields['id_user_detail'] = $id_user;
                 if ($this->userDetail->insert($userFields)) {
 
-                    $response['success'] = true;
-                    $response['messages'] = lang("Berhasil menambahkan data");
+                    $response['status'] = true;
+                    $response['message'] = lang("Berhasil menambahkan data");
                 } else {
 
-                    $response['success'] = false;
-                    $response['messages'] = lang("Gagal menambahkan data");
+                    $response['status'] = false;
+                    $response['message'] = lang("Gagal menambahkan data user detail");
                 }
             } else {
 
-                $response['success'] = false;
-                $response['messages'] = lang("Gagal menambahkan data");
+                $response['status'] = false;
+                $response['message'] = $this->user->errors;
             }
             $db->transCommit();
         } catch (\Exception $e) {
-            $response['success'] = false;
-            $response['messages'] = lang("Gagal menambahkan data");
+            $response['status'] = false;
+            $response['message'] = lang("Gagal menambahkan data");
             // Rollback the transaction if any insert fails
             $db->transRollback();
         }
+        return $this->response->setJSON($response);
+    }
 
+    public function checkEmail()
+    {
+        $data = $this->request->getJSON();
+
+        $db = \Config\Database::connect();
+
+        $email = $data->email;
+
+        $result = $this->user->where('email_user', $email)->find();
+
+        if ($result) {
+            $response = [
+                'status'    => true,
+                'message'   => 'Email terdaftar',
+                'result'    => $result
+            ];
+        } else {
+            $response = [
+                'status'    => false,
+                'message'   => 'Email tidak terdaftar',
+                'result'    => []
+            ];
+        }
+
+        return $this->response->setJSON($response);
+    }
+
+    public function passwordReset()
+    {
+        $response = array();
+        $db = \Config\Database::connect();
+        $data = $this->request->getJSON();
+        // $password = $this->request->getPost('password');
+        // $field['email_user'] = $this->request->getPost('email');
+        $password = $data->password;
+        $field['id_user'] = $data->id_user;
+
+        // var_dump($field);die;
+
+        $db->transBegin();
+
+        try {
+           
+            $value = [
+                'password' => password_hash($password, PASSWORD_BCRYPT)
+            ];
+
+            if ($this->user->update($field, $value)) {
+                $response['status'] = true;
+                $response['message'] = lang("Berhasil mengubah password");
+            } else {
+                $response['status'] = false;
+                $response['message'] = lang("Gagal mengubah password");
+            }
+            $db->transCommit();
+        } catch (\Exception $e) {
+            $response['status'] = false;
+            $response['message'] = lang("Gagal mengubah password");
+            // Rollback the transaction if any insert fails
+            $db->transRollback();
+        }
         return $this->response->setJSON($response);
     }
 }
