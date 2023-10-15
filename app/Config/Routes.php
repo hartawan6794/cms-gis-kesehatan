@@ -33,6 +33,8 @@ $routes->setAutoRoute(true);
 $routes->group('api', function($routes){
     $routes->post('login', 'Api\AuthApi::login');
     $routes->post('register', 'Api\AuthApi::register');
+    $routes->post('checkemail', 'Api\AuthApi::checkEmail');
+    $routes->post('resetpassword', 'Api\AuthApi::passwordReset');
     $routes->post('user', 'Api\AuthApi::getUser',['filter' => 'jwtFilter']);
 });
 
