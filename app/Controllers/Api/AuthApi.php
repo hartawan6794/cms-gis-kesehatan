@@ -29,7 +29,7 @@ class AuthApi extends BaseController
         $email = $data->email;
         $password = $data->password;
 
-        $result = $this->user->select('tbl_user.*, tud.nama_lengkap,tud.img_user')->join('tbl_user_detail tud','tbl_user.id_user = tud.id_user_detail')->where('email_user', $email)->orWhere('username', $email)->find();
+        $result = $this->user->select('tbl_user.*, tud.nama_lengkap,tud.img_user')->join('tbl_user_detail tud', 'tbl_user.id_user = tud.id_user_detail')->where('email_user', $email)->orWhere('username', $email)->find();
 
         if ($result) {
             if (password_verify($password, $result[0]->password)) {
@@ -193,7 +193,7 @@ class AuthApi extends BaseController
         $db->transBegin();
 
         try {
-           
+
             $value = [
                 'password' => password_hash($password, PASSWORD_BCRYPT)
             ];
@@ -213,5 +213,37 @@ class AuthApi extends BaseController
             $db->transRollback();
         }
         return $this->response->setJSON($response);
+    }
+
+    public function updateUser()
+    {
+        $response = array();
+        $db = \Config\Database::connect();
+
+        $data = $this->request->getJSON();
+
+        $fields['id_user_detail'] = $data->id_user_detail;
+        $fields['nik'] = $data->nik;
+        $fields['nama_lengkap'] = $data->nama_lengkap;
+        $fields['tgl_lahir'] = $data->tgl_lahir;
+        $fields['tmp_lahir'] = $data->tmp_lahir;
+        $fields['jns_kelamin'] = $data->jns_kelamin;
+        $fields['telpon'] = $data->telpon;
+    }
+
+    public function uploadPhoto()
+    {
+        $fields['uploadedImage'] = $this->request->getFile('image'); // 'image' sesuai dengan nama field di Android
+        $fields['id_user_detail'] = $this->request->getPost('id_user_detail'); // 'image' sesuai dengan nama field di Android
+
+        var_dump($fields); die;
+        // if ($uploadedImage->isValid() && !$uploadedImage->hasMoved()) {
+        //     $newName = $uploadedImage->getRandomName();
+        //     $uploadedImage->move(ROOTPATH . 'public/uploads', $newName);
+        //     // Simpan nama file di database jika diperlukan
+        //     return $this->response->setJSON(['message' => 'Upload successful']);
+        // } else {
+        //     return $this->response->setStatusCode(400)->setJSON(['error' => $uploadedImage->getErrorString()]);
+        // }
     }
 }
