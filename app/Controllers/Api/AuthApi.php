@@ -236,7 +236,7 @@ class AuthApi extends BaseController
         $fields['uploadedImage'] = $this->request->getFile('image'); // 'image' sesuai dengan nama field di Android
         $fields['id_user_detail'] = $this->request->getPost('id_user_detail'); // 'image' sesuai dengan nama field di Android
 
-        var_dump($fields);
+        var_dump($fields); die;
         // if ($uploadedImage->isValid() && !$uploadedImage->hasMoved()) {
         //     $newName = $uploadedImage->getRandomName();
         //     $uploadedImage->move(ROOTPATH . 'public/uploads', $newName);
