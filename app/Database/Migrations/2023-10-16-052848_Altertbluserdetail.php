@@ -8,7 +8,7 @@ class Altertbluserdetail extends Migration
 {
     public function up()
     {
-        // $this->forge->dropColumn('tbl_user', 'telpon');
+        $this->forge->dropColumn('tbl_user', 'telpon');
         $this->forge->addColumn('tbl_user_detail', [
             'telpon' => [
 
