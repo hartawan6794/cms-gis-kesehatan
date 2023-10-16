@@ -24,6 +24,7 @@
           <th>Username</th>
           <th>Nik</th>
           <th>Nama lengkap</th>
+          <th>Telpon</th>
           <th>Tanggal Lahir</th>
           <th>Tempat Lahir</th>
           <th>Gender</th>
@@ -101,6 +102,12 @@
               <div class="form-group mb-3">
                 <label for="nama_lengkap" class="col-form-label"> Nama lengkap: <span class="text-danger">*</span> </label>
                 <input type="text" id="nama_lengkap" name="nama_lengkap" class="form-control" placeholder="Nama lengkap">
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group mb-3">
+                <label for="telpon" class="col-form-label"> Telpon: </label>
+                <input type="text" id="telpon" name="telpon" class="form-control" placeholder="Nomor Telpon">
               </div>
             </div>
             <div class="col-md-6">
@@ -228,6 +235,7 @@
           $("#data-form #id_user_detail").val(response.id_user_detail);
           $("#data-form #nik").val(response.nik);
           $("#data-form #nama_lengkap").val(response.nama_lengkap);
+          $("#data-form #telpon").val(response.telpon);
           $("#data-form #tgl_lahir").val(response.tgl_lahir);
           $("#data-form #tmp_lahir").val(response.tmp_lahir);
           $("#data-form #jns_kelamin").val(response.jns_kelamin);

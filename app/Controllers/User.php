@@ -62,6 +62,7 @@ class User extends BaseController
 				$value->username,
 				$value->nik ? $value->nik : 'Belum diset',
 				$value->nama_lengkap,
+				$value->telpon,
 				$value->tgl_lahir ? tgl_indo($value->tgl_lahir) : 'Belum diset',
 				$value->tmp_lahir ? $value->tmp_lahir : 'Belum diset',
 				$value->jns_kelamin ? $value->jns_kelamin : 'Belum doset',
@@ -115,6 +116,7 @@ class User extends BaseController
 
 		$userFields['nik'] = $fields['nik'];
 		$userFields['nama_lengkap'] = $fields['nama_lengkap'];
+		$userFields['telpon'] = $fields['telpon'];
 		$userFields['tgl_lahir'] = $fields['tgl_lahir'];
 		$userFields['tmp_lahir'] = $fields['tmp_lahir'];
 		$userFields['jns_kelamin'] = $fields['jns_kelamin'];
@@ -234,6 +236,7 @@ class User extends BaseController
 
 		$userFields['nik'] = $fields['nik'];
 		$userFields['nama_lengkap'] = $fields['nama_lengkap'];
+		$userFields['telpon'] = $fields['telpon'];
 		$userFields['tgl_lahir'] = $fields['tgl_lahir'];
 		$userFields['tmp_lahir'] = $fields['tmp_lahir'];
 		$userFields['jns_kelamin'] = $fields['jns_kelamin'];
@@ -249,7 +252,7 @@ class User extends BaseController
 
 		$this->validation->setRules([
 			'nik' => ['label' => 'Nik', 'rules' => 'permit_empty|min_length[0]|max_length[20]'],
-			'nama_lengkap' => ['label' => 'Nama lengkap', 'rules' => 'required|min_length[0]|max_length[255]'],
+			'nama_lengkap' => ['label' => 'Nama lengkap', 'rules' => 'permit_empty|min_length[0]|max_length[255]'],
 			'confpassword' => ['label' => 'Password', 'rules' => 'matches[password]', 'errors' => ['matches' => 'Kata sandi tidak sama']],
 			'tgl_lahir' => ['label' => 'Tanggal Lahir', 'rules' => 'permit_empty|valid_date|min_length[0]'],
 			'tmp_lahir' => ['label' => 'Tempat Lahir', 'rules' => 'permit_empty|min_length[0]|max_length[255]'],
@@ -279,7 +282,7 @@ class User extends BaseController
 				if ($img_user->getName() != '') {
 
 					//ketika file ada, menghapus file lama
-					if (file_exists('img/user/' . $dataImage->img_user)) {
+					if ($dataImage->img_user) {
 						unlink('img/user/' . $dataImage->img_user);
 					}
 					$fileName = 'user-' . $img_user->getRandomName();
