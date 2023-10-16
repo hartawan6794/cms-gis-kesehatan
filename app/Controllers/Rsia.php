@@ -216,11 +216,17 @@ class Rsia extends BaseController
 		$response = array();
 
 		$id = $this->request->getPost('id_rsia');
+		$data = $this->rsiaModel->where('id_rsis',$id)->first();
 
 		if (!$this->validation->check($id, 'required|numeric')) {
 
 			throw new \CodeIgniter\Exceptions\PageNotFoundException();
 		} else {
+
+			//ketika file ada, menghapus file lama
+			if ($data->gambar) {
+				unlink('img/rsia/' . $data->gambar);
+			}
 
 			if ($this->rsiaModel->where('id_rsia', $id)->delete()) {
 

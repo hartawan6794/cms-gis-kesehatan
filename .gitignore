@@ -127,3 +127,8 @@ nb-configuration.xml
 
 public/img/*
 
+# Ignore Autoload configuration file
+app/Config/Autoload.php
+
+# Ignore Autoload ThirdParty file
+app/ThirdParty/firebase

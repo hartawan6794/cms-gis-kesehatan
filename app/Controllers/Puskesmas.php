@@ -212,11 +212,17 @@ class Puskesmas extends BaseController
 
 		$id = $this->request->getPost('id_puskesmas');
 
+		$data = $this->puskesmasModel->where('id_puskesmas',$id)->first();
+
 		if (!$this->validation->check($id, 'required|numeric')) {
 
 			throw new \CodeIgniter\Exceptions\PageNotFoundException();
 		} else {
 
+			//ketika file ada, menghapus file lama
+			if ($data->gambar) {
+				unlink('img/puskesmas/' . $data->gambar);
+			}
 			if ($this->puskesmasModel->where('id_puskesmas', $id)->delete()) {
 
 				$response['success'] = true;

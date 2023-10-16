@@ -221,11 +221,17 @@ class Klinik extends BaseController
 
 		$id = $this->request->getPost('id_klinik');
 
+		$data = $this->klinikModel->where('id_klinik',$id)->first();
+
 		if (!$this->validation->check($id, 'required|numeric')) {
 
 			throw new \CodeIgniter\Exceptions\PageNotFoundException();
 		} else {
 
+			//ketika file ada, menghapus file lama
+			if ($data->gambar) {
+				unlink('img/klinik/' . $data->gambar);
+			}
 			if ($this->klinikModel->where('id_klinik', $id)->delete()) {
 
 				$response['success'] = true;

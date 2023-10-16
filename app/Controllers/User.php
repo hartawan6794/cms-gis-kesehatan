@@ -106,6 +106,7 @@ class User extends BaseController
 		$fields['tgl_lahir'] = $this->request->getPost('tgl_lahir');
 		$fields['tmp_lahir'] = $this->request->getPost('tmp_lahir');
 		$fields['jns_kelamin'] = $this->request->getPost('jns_kelamin');
+		$fields['telpon'] = $this->request->getPost('telpon');
 		$img_user = $this->request->getFile('img_user');
 		$fields['email'] = $this->request->getPost('email');
 		$fields['username'] = $this->request->getPost('username');
@@ -224,6 +225,7 @@ class User extends BaseController
 		$fields['tgl_lahir'] = $this->request->getPost('tgl_lahir');
 		$fields['tmp_lahir'] = $this->request->getPost('tmp_lahir');
 		$fields['jns_kelamin'] = $this->request->getPost('jns_kelamin');
+		$fields['telpon'] = $this->request->getPost('telpon');
 		$img_user = $this->request->getFile('img_user');
 		$fields['email'] = $this->request->getPost('email');
 		$fields['username'] = $this->request->getPost('username');
@@ -315,12 +317,17 @@ class User extends BaseController
 
 		$id = $this->request->getPost('id_user_detail');
 
-		// var_dump($id);die;
+		$data = $this->userModel->where('id_user_detail',$id)->first();
 
 		if (!$this->validation->check($id, 'required|numeric')) {
 
 			throw new \CodeIgniter\Exceptions\PageNotFoundException();
 		} else {
+
+			//ketika file ada, menghapus file lama
+			if ($data->img_user) {
+				unlink('img/user/' . $data->img_user);
+			}
 
 			if ($this->userModel->where('id_user_detail', $id)->delete()) {
 				if ($this->user->where('id_user', $id)->delete()) {

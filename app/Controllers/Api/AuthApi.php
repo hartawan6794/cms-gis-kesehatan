@@ -62,7 +62,7 @@ class AuthApi extends BaseController
         $data = $this->request->getJSON();
         $id_user = $data->id_user_detail;
 
-        // $id_user = $this->request->getPost('id_user');
+        // $id_user = $this->request->getPost('id_user_detail');
         $data = $this->userDetail->where('id_user_detail', $id_user)->find();
         if ($data) {
             $response = [

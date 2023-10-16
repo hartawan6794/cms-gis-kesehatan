@@ -210,10 +210,17 @@ class Rumahsakit extends BaseController
 
 		$id = $this->request->getPost('id_rs');
 
+		$data = $this->rumahsakitModel->where('id_rs',$id)->first();
+
 		if (!$this->validation->check($id, 'required|numeric')) {
 
 			throw new \CodeIgniter\Exceptions\PageNotFoundException();
 		} else {
+
+			//ketika file ada, menghapus file lama
+			if ($data->gambar) {
+				unlink('img/rumahsakit/' . $data->gambar);
+			}
 
 			if ($this->rumahsakitModel->where('id_rs', $id)->delete()) {
 

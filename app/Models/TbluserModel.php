@@ -10,7 +10,7 @@ class TbluserModel extends Model {
 	protected $primaryKey = 'id_user';
 	protected $returnType = 'object';
 	protected $useSoftDeletes = false;
-	protected $allowedFields = ['email_user', 'username', 'password', 'device_id', 'telpon', 'status','bearer_token'];
+	protected $allowedFields = ['email_user', 'username', 'password', 'device_id', 'status','bearer_token'];
 	protected $useTimestamps = false;
 	protected $createdField  = 'created_at';
 	protected $updatedField  = 'updated_at';
