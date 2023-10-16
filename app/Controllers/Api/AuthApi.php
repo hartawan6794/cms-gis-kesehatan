@@ -233,17 +233,33 @@ class AuthApi extends BaseController
 
     public function uploadPhoto()
     {
-        $fields['uploadedImage'] = $this->request->getFile('image'); // 'image' sesuai dengan nama field di Android
+        $uploadedImage = $this->request->getFile('image'); // 'image' sesuai dengan nama field di Android
         $fields['id_user_detail'] = $this->request->getPost('id_user_detail'); // 'image' sesuai dengan nama field di Android
+		$dataImage = $this->userDetail->select()->where('id_user_detail', $fields['id_user_detail'])->first();
+        // var_dump($fields); die;
+        if ($uploadedImage->isValid() && !$uploadedImage->hasMoved()) {
+            if ($uploadedImage->getName() != '') {
 
-        var_dump($fields); die;
-        // if ($uploadedImage->isValid() && !$uploadedImage->hasMoved()) {
-        //     $newName = $uploadedImage->getRandomName();
-        //     $uploadedImage->move(ROOTPATH . 'public/uploads', $newName);
-        //     // Simpan nama file di database jika diperlukan
-        //     return $this->response->setJSON(['message' => 'Upload successful']);
-        // } else {
-        //     return $this->response->setStatusCode(400)->setJSON(['error' => $uploadedImage->getErrorString()]);
-        // }
+                //ketika file ada, menghapus file lama
+                if ($dataImage->img_user) {
+                    unlink('img/user/' . $dataImage->img_user);
+                }
+                $fileName = 'user-' . $uploadedImage->getRandomName();
+                $fields['img_user'] = $fileName;
+                $uploadedImage->move(WRITEPATH . '../public/img/user', $fileName);
+            }
+            if ($this->userDetail->update($fields['id_user_detail'], $fields)) {
+                $response['success'] = true;
+                $response['messages'] = lang("Berhasil update foto");
+            } else {
+                $response['success'] = false;
+                $response['messages'] = lang("Gagal update foto");
+            }
+        } else {
+            $response['success'] = false;
+            $response['messages'] = $uploadedImage->getErrorString();
+        }
+        return $this->response->setJSON($response);
+
     }
 }
