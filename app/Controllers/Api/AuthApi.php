@@ -242,7 +242,7 @@ class AuthApi extends BaseController
         $fields['jns_kelamin'] = $this->request->getPost('jns_kelamin');
         $fields['telpon'] = $this->request->getPost('telpon');
         $dataImage = $this->userDetail->select()->where('id_user_detail', $fields['id_user_detail'])->first();
-        if ($uploadedImage->isValid() && !$uploadedImage->hasMoved()) {
+        if ($uploadedImage != null && !$uploadedImage->hasMoved()) {
             if ($uploadedImage->getName() != '') {
 
                 //ketika file ada, menghapus file lama
@@ -255,12 +255,13 @@ class AuthApi extends BaseController
             }
         }
 
+
         if ($this->userDetail->update($fields['id_user_detail'], $fields)) {
             $response['success'] = true;
-            $response['messages'] = lang("Berhasil update data profile");
+            $response['message'] = lang("Berhasil update data profile");
         } else {
             $response['success'] = false;
-            $response['messages'] = lang("Gagal update data profile");
+            $response['message'] = lang("Gagal update data profile");
         }
         return $this->response->setJSON($response);
     }
