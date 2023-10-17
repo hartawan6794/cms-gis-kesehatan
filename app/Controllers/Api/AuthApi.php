@@ -235,14 +235,13 @@ class AuthApi extends BaseController
     {
         $uploadedImage = $this->request->getFile('image'); // 'image' sesuai dengan nama field di Android
         $fields['id_user_detail'] = $this->request->getPost('id_user_detail'); // 'image' sesuai dengan nama field di Android
-		$fields['nik'] = $this->request->getPost('nik');
-		$fields['nama_lengkap'] = $this->request->getPost('nama_lengkap');
-		$fields['tgl_lahir'] = $this->request->getPost('tgl_lahir');
-		$fields['tmp_lahir'] = $this->request->getPost('tmp_lahir');
-		$fields['jns_kelamin'] = $this->request->getPost('jns_kelamin');
-		$fields['telpon'] = $this->request->getPost('telpon');
-		$dataImage = $this->userDetail->select()->where('id_user_detail', $fields['id_user_detail'])->first();
-        // var_dump($fields); die;
+        $fields['nik'] = $this->request->getPost('nik');
+        $fields['nama_lengkap'] = $this->request->getPost('nama_lengkap');
+        $fields['tgl_lahir'] = $this->request->getPost('tgl_lahir');
+        $fields['tmp_lahir'] = $this->request->getPost('tmp_lahir');
+        $fields['jns_kelamin'] = $this->request->getPost('jns_kelamin');
+        $fields['telpon'] = $this->request->getPost('telpon');
+        $dataImage = $this->userDetail->select()->where('id_user_detail', $fields['id_user_detail'])->first();
         if ($uploadedImage->isValid() && !$uploadedImage->hasMoved()) {
             if ($uploadedImage->getName() != '') {
 
@@ -254,18 +253,15 @@ class AuthApi extends BaseController
                 $fields['img_user'] = $fileName;
                 $uploadedImage->move(WRITEPATH . '../public/img/user', $fileName);
             }
-            if ($this->userDetail->update($fields['id_user_detail'], $fields)) {
-                $response['success'] = true;
-                $response['messages'] = lang("Berhasil update foto");
-            } else {
-                $response['success'] = false;
-                $response['messages'] = lang("Gagal update foto");
-            }
+        }
+
+        if ($this->userDetail->update($fields['id_user_detail'], $fields)) {
+            $response['success'] = true;
+            $response['messages'] = lang("Berhasil update data profile");
         } else {
             $response['success'] = false;
-            $response['messages'] = $uploadedImage->getErrorString();
+            $response['messages'] = lang("Gagal update data profile");
         }
         return $this->response->setJSON($response);
-
     }
 }
