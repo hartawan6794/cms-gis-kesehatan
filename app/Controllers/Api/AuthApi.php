@@ -214,23 +214,6 @@ class AuthApi extends BaseController
         }
         return $this->response->setJSON($response);
     }
-
-    public function updateUser()
-    {
-        $response = array();
-        $db = \Config\Database::connect();
-
-        $data = $this->request->getJSON();
-
-        $fields['id_user_detail'] = $data->id_user_detail;
-        $fields['nik'] = $data->nik;
-        $fields['nama_lengkap'] = $data->nama_lengkap;
-        $fields['tgl_lahir'] = $data->tgl_lahir;
-        $fields['tmp_lahir'] = $data->tmp_lahir;
-        $fields['jns_kelamin'] = $data->jns_kelamin;
-        $fields['telpon'] = $data->telpon;
-    }
-
     public function uploadPhoto()
     {
         $uploadedImage = $this->request->getFile('image'); // 'image' sesuai dengan nama field di Android
@@ -242,7 +225,7 @@ class AuthApi extends BaseController
         $fields['jns_kelamin'] = $this->request->getPost('jns_kelamin');
         $fields['telpon'] = $this->request->getPost('telpon');
         $dataImage = $this->userDetail->select()->where('id_user_detail', $fields['id_user_detail'])->first();
-        if ($uploadedImage != null && !$uploadedImage->hasMoved()) {
+        if ($uploadedImage->isValid() && !$uploadedImage->hasMoved()) {
             if ($uploadedImage->getName() != '') {
 
                 //ketika file ada, menghapus file lama
@@ -255,13 +238,12 @@ class AuthApi extends BaseController
             }
         }
 
-
         if ($this->userDetail->update($fields['id_user_detail'], $fields)) {
             $response['success'] = true;
-            $response['message'] = lang("Berhasil update data profile");
+            $response['messages'] = lang("Berhasil update data profile");
         } else {
             $response['success'] = false;
-            $response['message'] = lang("Gagal update data profile");
+            $response['messages'] = lang("Gagal update data profile");
         }
         return $this->response->setJSON($response);
     }
