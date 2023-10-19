@@ -42,14 +42,14 @@ class Rumahsakit extends BaseController
 			$ops .= '<button type="button" class=" btn btn-sm dropdown-toggle btn-info" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">';
 			$ops .= '<i class="fa-solid fa-pen-square"></i>  </button>';
 			$ops .= '<div class="dropdown-menu">';
-			$ops .= '<a class="dropdown-item text-info" onClick="save(' . $value->id_rs . ')"><i class="fa-solid fa-pen-to-square"></i>   ' .  lang("Ubah")  . '</a>';
+			$ops .= '<a class="dropdown-item text-info" onClick="save(' . $value->id . ')"><i class="fa-solid fa-pen-to-square"></i>   ' .  lang("Ubah")  . '</a>';
 			$ops .= '<div class="dropdown-divider"></div>';
-			$ops .= '<a class="dropdown-item text-danger" onClick="remove(' . $value->id_rs . ')"><i class="fa-solid fa-trash"></i>   ' .  lang("Hapus")  . '</a>';
+			$ops .= '<a class="dropdown-item text-danger" onClick="remove(' . $value->id . ')"><i class="fa-solid fa-trash"></i>   ' .  lang("Hapus")  . '</a>';
 			$ops .= '</div></div>';
 
 			$data['data'][$key] = array(
 				$no,
-				$value->nama_rs,
+				$value->nama,
 				$value->kecamatan,
 				$value->notelp,
 				$value->deskripsi,
@@ -72,11 +72,11 @@ class Rumahsakit extends BaseController
 	{
 		$response = array();
 
-		$id = $this->request->getPost('id_rs');
+		$id = $this->request->getPost('id');
 
 		if ($this->validation->check($id, 'required|numeric')) {
 
-			$data = $this->rumahsakitModel->where('id_rs', $id)->first();
+			$data = $this->rumahsakitModel->where('id', $id)->first();
 
 			return $this->response->setJSON($data);
 		} else {
@@ -88,8 +88,8 @@ class Rumahsakit extends BaseController
 	{
 		$response = array();
 
-		$fields['id_rs'] = $this->request->getPost('id_rs');
-		$fields['nama_rs'] = $this->request->getPost('nama_rs');
+		$fields['id'] = $this->request->getPost('id');
+		$fields['nama'] = $this->request->getPost('nama');
 		$fields['kecamatan'] = $this->request->getPost('kecamatan');
 		$fields['notelp'] = $this->request->getPost('notelp');
 		$fields['deskripsi'] = $this->request->getPost('deskripsi');
@@ -100,7 +100,7 @@ class Rumahsakit extends BaseController
 
 
 		$this->validation->setRules([
-			'nama_rs' => ['label' => 'Nama rs', 'rules' => 'required'],
+			'nama' => ['label' => 'Nama rs', 'rules' => 'required'],
 			'kecamatan' => ['label' => 'Kecamatan', 'rules' => 'required'],
 			'notelp' => ['label' => 'Notelp', 'rules' => 'required'],
 			'Latitude' => ['label' => 'Latitude', 'rules' => 'required'],
@@ -145,8 +145,8 @@ class Rumahsakit extends BaseController
 	{
 		$response = array();
 
-		$fields['id_rs'] = $this->request->getPost('id_rs');
-		$fields['nama_rs'] = $this->request->getPost('nama_rs');
+		$fields['id'] = $this->request->getPost('id');
+		$fields['nama'] = $this->request->getPost('nama');
 		$fields['kecamatan'] = $this->request->getPost('kecamatan');
 		$fields['notelp'] = $this->request->getPost('notelp');
 		$fields['deskripsi'] = $this->request->getPost('deskripsi');
@@ -155,10 +155,10 @@ class Rumahsakit extends BaseController
 		$gambar = $this->request->getFile('gambar');
 		$fields['updated_at'] =  date('Y-m-d H:i:s');
 
-		$data = $this->rumahsakitModel->select()->where('id_rs', $fields['id_rs'])->first();
+		$data = $this->rumahsakitModel->select()->where('id', $fields['id'])->first();
 
 		$this->validation->setRules([
-			'nama_rs' => ['label' => 'Nama rs', 'rules' => 'required'],
+			'nama' => ['label' => 'Nama rs', 'rules' => 'required'],
 			'kecamatan' => ['label' => 'Kecamatan', 'rules' => 'required'],
 			'notelp' => ['label' => 'Notelp', 'rules' => 'required'],
 			'Latitude' => ['label' => 'Latitude', 'rules' => 'required'],
@@ -190,7 +190,7 @@ class Rumahsakit extends BaseController
 				$fields['gambar'] = $fileName;
 				$gambar->move(WRITEPATH . '../public/img/rumahsakit', $fileName);
 			}
-			if ($this->rumahsakitModel->update($fields['id_rs'], $fields)) {
+			if ($this->rumahsakitModel->update($fields['id'], $fields)) {
 
 				$response['success'] = true;
 				$response['messages'] = lang("Berhasil perbarui data");
@@ -208,9 +208,9 @@ class Rumahsakit extends BaseController
 	{
 		$response = array();
 
-		$id = $this->request->getPost('id_rs');
+		$id = $this->request->getPost('id');
 
-		$data = $this->rumahsakitModel->where('id_rs',$id)->first();
+		$data = $this->rumahsakitModel->where('id',$id)->first();
 
 		if (!$this->validation->check($id, 'required|numeric')) {
 
@@ -222,7 +222,7 @@ class Rumahsakit extends BaseController
 				unlink('img/rumahsakit/' . $data->gambar);
 			}
 
-			if ($this->rumahsakitModel->where('id_rs', $id)->delete()) {
+			if ($this->rumahsakitModel->where('id', $id)->delete()) {
 
 				$response['success'] = true;
 				$response['messages'] = lang("Berhasil menghapus data");

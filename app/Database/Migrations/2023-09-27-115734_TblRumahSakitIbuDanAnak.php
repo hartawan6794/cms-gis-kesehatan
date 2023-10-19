@@ -9,12 +9,12 @@ class TblRumahSakitIbuDanAnak extends Migration
     public function up()
     {
         $fields = [ 
-            'id_rsia' => [
+            'id' => [
                 'type' => 'TINYINT',
                 'unsigned' => 3,
                 'auto_increment' => true
             ],
-            'nama_rsia' => [
+            'nama' => [
                 'type' => 'VARCHAR',
                 'constraint' => '255'
             ],
@@ -57,7 +57,7 @@ class TblRumahSakitIbuDanAnak extends Migration
         ];
 
         $this->forge->addField($fields);
-        $this->forge->addPrimaryKey('id_rsia');
+        $this->forge->addPrimaryKey('id');
         $attributes = ['ENGINE' => 'InnoDB'];
         $this->forge->createTable('tbl_rumah_sakit_ibu_anak', false, $attributes);
 

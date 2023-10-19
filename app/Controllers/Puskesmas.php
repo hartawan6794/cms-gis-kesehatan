@@ -42,14 +42,14 @@ class Puskesmas extends BaseController
 			$ops .= '<button type="button" class=" btn btn-sm dropdown-toggle btn-info" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">';
 			$ops .= '<i class="fa-solid fa-pen-square"></i>  </button>';
 			$ops .= '<div class="dropdown-menu">';
-			$ops .= '<a class="dropdown-item text-info" onClick="save(' . $value->id_puskesmas . ')"><i class="fa-solid fa-pen-to-square"></i>   ' .  lang("Ubah")  . '</a>';
+			$ops .= '<a class="dropdown-item text-info" onClick="save(' . $value->id . ')"><i class="fa-solid fa-pen-to-square"></i>   ' .  lang("Ubah")  . '</a>';
 			$ops .= '<div class="dropdown-divider"></div>';
-			$ops .= '<a class="dropdown-item text-danger" onClick="remove(' . $value->id_puskesmas . ')"><i class="fa-solid fa-trash"></i>   ' .  lang("Hapus")  . '</a>';
+			$ops .= '<a class="dropdown-item text-danger" onClick="remove(' . $value->id . ')"><i class="fa-solid fa-trash"></i>   ' .  lang("Hapus")  . '</a>';
 			$ops .= '</div></div>';
 
 			$data['data'][$key] = array(
 				$no,
-				$value->nama_puskesmas,
+				$value->nama,
 				$value->kecamatan,
 				$value->notelp,
 				$value->deskripsi,
@@ -71,11 +71,11 @@ class Puskesmas extends BaseController
 	{
 		$response = array();
 
-		$id = $this->request->getPost('id_puskesmas');
+		$id = $this->request->getPost('id');
 
 		if ($this->validation->check($id, 'required|numeric')) {
 
-			$data = $this->puskesmasModel->where('id_puskesmas', $id)->first();
+			$data = $this->puskesmasModel->where('id', $id)->first();
 
 			return $this->response->setJSON($data);
 		} else {
@@ -87,8 +87,8 @@ class Puskesmas extends BaseController
 	{
 		$response = array();
 
-		$fields['id_puskesmas'] = $this->request->getPost('id_puskesmas');
-		$fields['nama_puskesmas'] = $this->request->getPost('nama_puskesmas');
+		$fields['id'] = $this->request->getPost('id');
+		$fields['nama'] = $this->request->getPost('nama');
 		$fields['kecamatan'] = $this->request->getPost('kecamatan');
 		$fields['notelp'] = $this->request->getPost('notelp');
 		$fields['deskripsi'] = $this->request->getPost('deskripsi');
@@ -98,7 +98,7 @@ class Puskesmas extends BaseController
 		$fields['created_at'] = date('Y-m-d H:i:s');
 
 		$this->validation->setRules([
-			'nama_puskesmas' => ['label' => 'Nama puskesmas', 'rules' => 'required'],
+			'nama' => ['label' => 'Nama puskesmas', 'rules' => 'required'],
 			'kecamatan' => ['label' => 'Kecamatan', 'rules' => 'required'],
 			'notelp' => ['label' => 'Notelp', 'rules' => 'required'],
 			'Latitude' => ['label' => 'Latitude', 'rules' => 'required'],
@@ -146,8 +146,8 @@ class Puskesmas extends BaseController
 	{
 		$response = array();
 
-		$fields['id_puskesmas'] = $this->request->getPost('id_puskesmas');
-		$fields['nama_puskesmas'] = $this->request->getPost('nama_puskesmas');
+		$fields['id'] = $this->request->getPost('id');
+		$fields['nama'] = $this->request->getPost('nama');
 		$fields['kecamatan'] = $this->request->getPost('kecamatan');
 		$fields['notelp'] = $this->request->getPost('notelp');
 		$fields['deskripsi'] = $this->request->getPost('deskripsi');
@@ -156,10 +156,10 @@ class Puskesmas extends BaseController
 		$gambar = $this->request->getFile('gambar');
 		$fields['updated_at'] =  date('Y-m-d H:i:s');
 
-		$data = $this->puskesmasModel->select()->where('id_puskesmas', $fields['id_puskesmas'])->first();
+		$data = $this->puskesmasModel->select()->where('id', $fields['id'])->first();
 
 		$this->validation->setRules([
-			'nama_puskesmas' => ['label' => 'Nama puskesmas', 'rules' => 'required'],
+			'nama' => ['label' => 'Nama puskesmas', 'rules' => 'required'],
 			'kecamatan' => ['label' => 'Kecamatan', 'rules' => 'required'],
 			'notelp' => ['label' => 'Notelp', 'rules' => 'required'],
 			'Latitude' => ['label' => 'Latitude', 'rules' => 'required'],
@@ -192,7 +192,7 @@ class Puskesmas extends BaseController
 				$fields['gambar'] = $fileName;
 				$gambar->move(WRITEPATH . '../public/img/puskesmas', $fileName);
 			}
-			if ($this->puskesmasModel->update($fields['id_puskesmas'], $fields)) {
+			if ($this->puskesmasModel->update($fields['id'], $fields)) {
 
 				$response['success'] = true;
 				$response['messages'] = lang("Berhasil perbarui data");
@@ -210,9 +210,9 @@ class Puskesmas extends BaseController
 	{
 		$response = array();
 
-		$id = $this->request->getPost('id_puskesmas');
+		$id = $this->request->getPost('id');
 
-		$data = $this->puskesmasModel->where('id_puskesmas',$id)->first();
+		$data = $this->puskesmasModel->where('id',$id)->first();
 
 		if (!$this->validation->check($id, 'required|numeric')) {
 
@@ -223,7 +223,7 @@ class Puskesmas extends BaseController
 			if ($data->gambar) {
 				unlink('img/puskesmas/' . $data->gambar);
 			}
-			if ($this->puskesmasModel->where('id_puskesmas', $id)->delete()) {
+			if ($this->puskesmasModel->where('id', $id)->delete()) {
 
 				$response['success'] = true;
 				$response['messages'] = lang("Berhasil menghapus data");
