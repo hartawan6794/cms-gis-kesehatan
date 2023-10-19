@@ -39,6 +39,7 @@ $routes->group('api', function($routes){
     $routes->post('uploadimage', 'Api\AuthApi::uploadPhoto',['filter' => 'jwtFilter']);
     $routes->post('datatempat', 'Api\Api::tempatKesehatanTerkini',['filter' => 'jwtFilter']);
     $routes->post('getlayanan', 'Api\Api::layananKesehatan',['filter' => 'jwtFilter']);
+    $routes->post('search', 'Api\Api::searchLayananKesehatan',['filter' => 'jwtFilter']);
 });
 
 $routes->get('/',  'Home::index',['filter' => 'auth']);

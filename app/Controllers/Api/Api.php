@@ -117,4 +117,43 @@ class Api extends BaseController
 
         return $this->response->setJSON($response);
     }
+
+    public function searchLayananKesehatan(){
+        $response = array();
+        $db = \Config\Database::connect();
+        $data = $this->request->getJSON();
+
+        $table = $data->tabel;
+        $nama = $data->nama;
+
+        $sql = "SELECT 
+        id,
+        SUBSTRING_INDEX(SUBSTRING_INDEX(gambar, '-', -1), '_', 1) AS tabel,
+        nama,
+        kecamatan,
+        deskripsi,
+        latitude,
+        longitude,
+        gambar,
+        notelp
+        FROM $table 
+        WHERE nama like '%$nama%'";
+
+        $data = $this->db->query($sql)->getResult();
+        if ($data) {
+            $response = [
+                'status'    => true,
+                'message'   => 'Berhasil Mendapatkan Data',
+                'result'      => $data,
+            ];
+        } else {
+            $response = [
+                'status'    => false,
+                'message'   => 'Gagal Mendapatkan Data',
+                'result'      => []
+            ];
+        }
+
+        return $this->response->setJSON($response);
+    }
 }
