@@ -23,9 +23,9 @@ class Api extends BaseController
     {
 
         $sql = "SELECT
-        id_klinik AS id,
+        id,
         SUBSTRING_INDEX(SUBSTRING_INDEX(gambar, '-', -1), '_', 1) AS tabel,
-        nama_klinik AS nama,
+        nama,
         kecamatan,
         deskripsi,
         latitude,
