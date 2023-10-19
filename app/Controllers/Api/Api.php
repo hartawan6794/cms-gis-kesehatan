@@ -85,16 +85,20 @@ class Api extends BaseController
         $response = array();
         $db = \Config\Database::connect();
         $data = $this->request->getJSON();
-        $table = $this->request->getPost('table');
-        $id = $this->request->getPost('id');
 
-        $nama_id = $table == 'tbl_puskesmas' ? 'id_puskesmas' : ($table == 'tbl_rumah_sakit' ? 'id_rs' : ($table == 'tbl_rumah_sakit_ibu_anak' ? 'id_rsia' : 'id_klinik'));
+        $table = $data->tabel;
 
-        if (!$id) {
-            $sql = "SELECT * FROM $table";
-        } else {
-            $sql = "SELECT * FROM $table WHERE $nama_id = '$id'";
-        }
+        $sql = "SELECT 
+        id,
+        SUBSTRING_INDEX(SUBSTRING_INDEX(gambar, '-', -1), '_', 1) AS tabel,
+        nama,
+        kecamatan,
+        deskripsi,
+        latitude,
+        longitude,
+        gambar,
+        notelp
+        FROM $table";
 
         $data = $this->db->query($sql)->getResult();
         if ($data) {
