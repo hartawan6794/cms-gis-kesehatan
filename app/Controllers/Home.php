@@ -63,7 +63,7 @@ class Home extends BaseController
 				$result = $matches[1];
 			$data['data'][$key] = array(
 				$no,
-				$value->nama_klinik,
+				$value->nama,
 				$value->kecamatan,
 				$value->notelp,
 				$value->deskripsi,

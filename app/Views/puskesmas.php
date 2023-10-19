@@ -52,13 +52,13 @@
       <div class="modal-body">
         <form id="data-form" class="pl-3 pr-3">
           <div class="row">
-            <input type="hidden" id="id_puskesmas" name="id_puskesmas" class="form-control" placeholder="Id puskesmas" maxlength="4" required>
+            <input type="hidden" id="id" name="id" class="form-control" placeholder="Id puskesmas" maxlength="4" required>
           </div>
           <div class="row">
             <div class="col-md-12">
               <div class="form-group mb-3">
-                <label for="nama_puskesmas" class="col-form-label"> Nama puskesmas: <span class="text-danger">*</span> </label>
-                <input type="text" id="nama_puskesmas" name="nama_puskesmas" class="form-control" placeholder="Nama Puskesmas">
+                <label for="nama" class="col-form-label"> Nama puskesmas: <span class="text-danger">*</span> </label>
+                <input type="text" id="nama" name="nama" class="form-control" placeholder="Nama Puskesmas">
               </div>
             </div>
             <div class="col-md-12">
@@ -161,11 +161,11 @@
     return submitText;
   }
 
-  function save(id_puskesmas) {
+  function save(id) {
     // reset the form 
     $("#data-form")[0].reset();
     $(".form-control").removeClass('is-invalid').removeClass('is-valid');
-    if (typeof id_puskesmas === 'undefined' || id_puskesmas < 1) { //add
+    if (typeof id === 'undefined' || id < 1) { //add
       urlController = '<?= base_url($controller . "/add") ?>';
       submitText = '<?= lang("Simpan") ?>';
       $('#model-header').removeClass('bg-info').addClass('bg-success');
@@ -179,7 +179,7 @@
         url: '<?php echo base_url($controller . "/getOne") ?>',
         type: 'post',
         data: {
-          id_puskesmas: id_puskesmas
+          id: id
         },
         dataType: 'json',
         success: function(response) {
@@ -188,8 +188,8 @@
           $("#form-btn").text(submitText);
           $('#data-modal').modal('show');
           //insert data to form
-          $("#data-form #id_puskesmas").val(response.id_puskesmas);
-          $("#data-form #nama_puskesmas").val(response.nama_puskesmas);
+          $("#data-form #id").val(response.id);
+          $("#data-form #nama").val(response.nama);
           $("#data-form #kecamatan").val(response.kecamatan);
           $("#data-form #deskripsi").val(response.deskripsi);
           $("#data-form #Latitude").val(response.Latitude);
@@ -289,7 +289,7 @@
 
 
 
-  function remove(id_puskesmas) {
+  function remove(id) {
     Swal.fire({
       title: "<?= lang("Hapus") ?>",
       text: "<?= lang("Yakin ingin menghapus ?") ?>",
@@ -306,7 +306,7 @@
           url: '<?php echo base_url($controller . "/remove") ?>',
           type: 'post',
           data: {
-            id_puskesmas: id_puskesmas
+            id: id
           },
           dataType: 'json',
           success: function(response) {

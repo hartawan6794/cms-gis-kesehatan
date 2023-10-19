@@ -44,14 +44,14 @@ class Klinik extends BaseController
 			$ops .= '<button type="button" class=" btn btn-sm dropdown-toggle btn-info" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">';
 			$ops .= '<i class="fa-solid fa-pen-square"></i>  </button>';
 			$ops .= '<div class="dropdown-menu">';
-			$ops .= '<a class="dropdown-item text-info" onClick="save(' . $value->id_klinik . ')"><i class="fa-solid fa-pen-to-square"></i>   ' .  lang("Ubah")  . '</a>';
+			$ops .= '<a class="dropdown-item text-info" onClick="save(' . $value->id . ')"><i class="fa-solid fa-pen-to-square"></i>   ' .  lang("Ubah")  . '</a>';
 			$ops .= '<div class="dropdown-divider"></div>';
-			$ops .= '<a class="dropdown-item text-danger" onClick="remove(' . $value->id_klinik . ')"><i class="fa-solid fa-trash"></i>   ' .  lang("Hapus")  . '</a>';
+			$ops .= '<a class="dropdown-item text-danger" onClick="remove(' . $value->id . ')"><i class="fa-solid fa-trash"></i>   ' .  lang("Hapus")  . '</a>';
 			$ops .= '</div></div>';
 
 			$data['data'][$key] = array(
 				$no,
-				$value->nama_klinik,
+				$value->nama,
 				$value->kecamatan,
 				$value->notelp,
 				$value->deskripsi,
@@ -74,11 +74,11 @@ class Klinik extends BaseController
 	{
 		$response = array();
 
-		$id = $this->request->getPost('id_klinik');
+		$id = $this->request->getPost('id');
 
 		if ($this->validation->check($id, 'required|numeric')) {
 
-			$data = $this->klinikModel->where('id_klinik', $id)->first();
+			$data = $this->klinikModel->where('id', $id)->first();
 
 			return $this->response->setJSON($data);
 		} else {
@@ -90,8 +90,8 @@ class Klinik extends BaseController
 	{
 		$response = array();
 
-		// $fields['id_klinik'] = $this->request->getPost('id_klinik');
-		$fields['nama_klinik'] = $this->request->getPost('nama_klinik');
+		// $fields['id'] = $this->request->getPost('id');
+		$fields['nama'] = $this->request->getPost('nama');
 		$fields['kecamatan'] = $this->request->getPost('kecamatan');
 		$fields['deskripsi'] = $this->request->getPost('deskripsi');
 		$fields['Latitude'] = $this->request->getPost('Latitude');
@@ -103,7 +103,7 @@ class Klinik extends BaseController
 
 
 		$this->validation->setRules([
-			'nama_klinik' => ['label' => 'Nama klinik', 'rules' => 'required'],
+			'nama' => ['label' => 'Nama klinik', 'rules' => 'required'],
 			'kecamatan' => ['label' => 'Kecamatan', 'rules' => 'required'],
 			'notelp' => ['label' => 'Notelp', 'rules' => 'required'],
 			'Latitude' => ['label' => 'Latitude', 'rules' => 'required'],
@@ -154,8 +154,8 @@ class Klinik extends BaseController
 	{
 		$response = array();
 
-		$fields['id_klinik'] = $this->request->getPost('id_klinik');
-		$fields['nama_klinik'] = $this->request->getPost('nama_klinik');
+		$fields['id'] = $this->request->getPost('id');
+		$fields['nama'] = $this->request->getPost('nama');
 		$fields['kecamatan'] = $this->request->getPost('kecamatan');
 		$fields['deskripsi'] = $this->request->getPost('deskripsi');
 		$fields['Latitude'] = $this->request->getPost('Latitude');
@@ -164,10 +164,10 @@ class Klinik extends BaseController
 		$gambar = $this->request->getFile('gambar');
 		$fields['updated_at'] =  date('Y-m-d H:i:s');
 
-		$data = $this->klinikModel->select()->where('id_klinik', $fields['id_klinik'])->first();
+		$data = $this->klinikModel->select()->where('id', $fields['id'])->first();
 
 		$this->validation->setRules([
-			'nama_klinik' => ['label' => 'Nama klinik', 'rules' => 'required'],
+			'nama' => ['label' => 'Nama klinik', 'rules' => 'required'],
 			'kecamatan' => ['label' => 'Kecamatan', 'rules' => 'required'],
 			'notelp' => ['label' => 'Notelp', 'rules' => 'required'],
 			'Latitude' => ['label' => 'Latitude', 'rules' => 'required'],
@@ -201,7 +201,7 @@ class Klinik extends BaseController
 				$gambar->move(WRITEPATH . '../public/img/klinik', $fileName);
 			}
 
-			if ($this->klinikModel->update($fields['id_klinik'], $fields)) {
+			if ($this->klinikModel->update($fields['id'], $fields)) {
 
 				$response['success'] = true;
 				$response['messages'] = lang("Berhasil perbarui data");
@@ -219,9 +219,9 @@ class Klinik extends BaseController
 	{
 		$response = array();
 
-		$id = $this->request->getPost('id_klinik');
+		$id = $this->request->getPost('id');
 
-		$data = $this->klinikModel->where('id_klinik',$id)->first();
+		$data = $this->klinikModel->where('id',$id)->first();
 
 		if (!$this->validation->check($id, 'required|numeric')) {
 
@@ -232,7 +232,7 @@ class Klinik extends BaseController
 			if ($data->gambar) {
 				unlink('img/klinik/' . $data->gambar);
 			}
-			if ($this->klinikModel->where('id_klinik', $id)->delete()) {
+			if ($this->klinikModel->where('id', $id)->delete()) {
 
 				$response['success'] = true;
 				$response['messages'] = lang("Berhasil menghapus data");
