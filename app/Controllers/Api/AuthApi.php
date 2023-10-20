@@ -93,7 +93,7 @@ class AuthApi extends BaseController
         $password = $data->userModel->password;
         $device_id = $data->userModel->device_id;
 
-        $cekEmail = $this->user->where('user_email', $email)->find();
+        $cekEmail = $this->user->where('email_user', $email)->find();
         $cekUsername = $this->user->where('username', $username)->find();
 
         $userFields['nama_lengkap'] = $nama_lengkap;
