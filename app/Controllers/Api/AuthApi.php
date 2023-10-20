@@ -93,6 +93,9 @@ class AuthApi extends BaseController
         $password = $data->userModel->password;
         $device_id = $data->userModel->device_id;
 
+        $cekEmail = $this->user->where('user_email', $email)->find();
+        $cekUsername = $this->user->where('username', $username)->find();
+
         $userFields['nama_lengkap'] = $nama_lengkap;
         $userFields['tgl_lahir'] = '0000-00-00';
 
@@ -124,24 +127,35 @@ class AuthApi extends BaseController
             ];
 
 
-            if ($this->user->insert($user)) {
-
-                $id_user = $this->user->insertID();
-                $userFields['id_user_detail'] = $id_user;
-                if ($this->userDetail->insert($userFields)) {
-
-                    $response['status'] = true;
-                    $response['message'] = lang("Berhasil menambahkan data");
-                } else {
-
-                    $response['status'] = false;
-                    $response['message'] = lang("Gagal menambahkan data user detail");
-                }
-            } else {
-
+            if($cekEmail){
                 $response['status'] = false;
-                $response['message'] = $this->user->errors;
+                $response['message'] = lang("Email telah digunakan");
+            }else{
+                if($cekUsername){
+                    $response['status'] = false;
+                    $response['message'] = lang("Username telah digunakan");
+                }else{
+                    if ($this->user->insert($user)) {
+
+                        $id_user = $this->user->insertID();
+                        $userFields['id_user_detail'] = $id_user;
+                        if ($this->userDetail->insert($userFields)) {
+        
+                            $response['status'] = true;
+                            $response['message'] = lang("Berhasil menambahkan data");
+                        } else {
+        
+                            $response['status'] = false;
+                            $response['message'] = lang("Gagal menambahkan data user detail");
+                        }
+                    } else {
+        
+                        $response['status'] = false;
+                        $response['message'] = $this->user->errors;
+                    }
+                }
             }
+            
             $db->transCommit();
         } catch (\Exception $e) {
             $response['status'] = false;
