@@ -94,6 +94,7 @@ class AuthApi extends BaseController
         $device_id = $data->userModel->device_id;
 
         $userFields['nama_lengkap'] = $nama_lengkap;
+        $userFields['tgl_lahir'] = '0000-00-00';
 
         $db->transBegin();
 
