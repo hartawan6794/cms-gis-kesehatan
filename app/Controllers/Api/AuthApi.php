@@ -240,7 +240,7 @@ class AuthApi extends BaseController
         $fields['jns_kelamin'] = $this->request->getPost('jns_kelamin');
         $fields['telpon'] = $this->request->getPost('telpon');
         $dataImage = $this->userDetail->select()->where('id_user_detail', $fields['id_user_detail'])->first();
-        if ($uploadedImage->isValid() && !$uploadedImage->hasMoved()) {
+        if ($uploadedImage != null && !$uploadedImage->hasMoved()) {
             if ($uploadedImage->getName() != '') {
 
                 //ketika file ada, menghapus file lama
