@@ -247,29 +247,29 @@ class Klinik extends BaseController
 	}
 
 
-	public function import()
-	{ // Ambil file Excel dari form unggahan
-		$file = $this->request->getFile('excel');
-		var_dump($file);
-		die;
+	// public function import()
+	// { // Ambil file Excel dari form unggahan
+	// 	$file = $this->request->getFile('excel');
+	// 	var_dump($file);
+	// 	die;
 
-		if ($file->isValid() && !$file->hasMoved()) {
-			// Load file Excel
-			$render = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+	// 	if ($file->isValid() && !$file->hasMoved()) {
+	// 		// Load file Excel
+	// 		$render = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
 
-			$spreadsheet = $render->load($spreadsheet);
-			// Ambil data dari lembar kerja pertama (Sheet)
-			// $worksheet = $spreadsheet->getActiveSheet();
-			$data = $spreadsheet->getActiveSheet()->toArray();
+	// 		$spreadsheet = $render->load($spreadsheet);
+	// 		// Ambil data dari lembar kerja pertama (Sheet)
+	// 		// $worksheet = $spreadsheet->getActiveSheet();
+	// 		$data = $spreadsheet->getActiveSheet()->toArray();
 
-			// Lakukan sesuatu dengan data yang diimpor
-			foreach ($data as $row) {
-				// Lakukan sesuatu dengan setiap baris data
-				print_r($row); // contoh: tampilkan data ke layar
-			}
-		} else {
-			// Kesalahan unggah file Excel
-			echo 'Terjadi kesalahan saat mengunggah file Excel.';
-		}
-	}
+	// 		// Lakukan sesuatu dengan data yang diimpor
+	// 		foreach ($data as $row) {
+	// 			// Lakukan sesuatu dengan setiap baris data
+	// 			print_r($row); // contoh: tampilkan data ke layar
+	// 		}
+	// 	} else {
+	// 		// Kesalahan unggah file Excel
+	// 		echo 'Terjadi kesalahan saat mengunggah file Excel.';
+	// 	}
+	// }
 }
