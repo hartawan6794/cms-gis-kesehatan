@@ -24,8 +24,8 @@ class Api extends BaseController
 
         $data = $this->request->getJSON();
 
-        $latitude = $this->request->getPost('latitude');
-        $longitude = $this->request->getPost('longitude');
+        $latitude = $data->latitude;
+        $longitude = $data->longitude;
 
         $sql = "SELECT
         id,
