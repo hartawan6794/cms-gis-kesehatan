@@ -24,8 +24,8 @@ class Api extends BaseController
 
         $data = $this->request->getJSON();
 
-        $latitude = $data->latitude;
-        $longitude = $data->longitude;
+        $latitude = $this->request->getPost('latitude');
+        $longitude = $this->request->getPost('longitude');
 
         $sql = "SELECT
         id,
@@ -74,11 +74,11 @@ class Api extends BaseController
             $distance = round($this->haversineDistance($latitude, $longitude, $row->latitude, $row->longitude), 1);
             array_push($value, array(
                 'id'         => $row->id,
-                'table'      => $row->table,
+                'table'      => $row->tabel,
                 'nama'       => $row->nama,
                 'kecamatan'  => $row->kecamatan,
                 'deskripsi'  => $row->deskripsi,
-                'latitude'   => $row->Latitude,
+                'latitude'   => $row->latitude,
                 'longitude'  => $row->longitude,
                 'gambar'     => $row->gambar,
                 'notelp'     => $row->notelp,
