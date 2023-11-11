@@ -90,7 +90,7 @@ class Api extends BaseController
             $response = [
                 'status'    => true,
                 'message'   => 'Berhasil Mendapatkan Data',
-                'result'      => $data,
+                'result'      => $value,
             ];
         } else {
             $response = [
