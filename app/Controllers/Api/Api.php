@@ -71,7 +71,7 @@ class Api extends BaseController
 
         $value = array();
         foreach ($data as $row) {
-            $distance = round($this->haversineDistance($latitude, $longitude, $row->Latitude, $row->longitude), 1);
+            $distance = round($this->haversineDistance($latitude, $longitude, $row->latitude, $row->longitude), 1);
             array_push($value, array(
                 'id'         => $row->id,
                 'table'      => $row->table,
