@@ -3,7 +3,7 @@
 <?= $this->section("content") ?>
 
 <div class="row">
-    <h1 class="mb-3">Selamat Datang, <?= session()->get('nama_lengkap')?></h1>
+    <h1 class="mb-3">Selamat Datang, <?= session()->get('nama_lengkap') ?></h1>
     <div class="col-lg-3 col-6">
         <div class="small-box bg-info">
             <div class="inner">
@@ -104,7 +104,8 @@
     $(function() {
         var table = $('#data_table').removeAttr('width').DataTable({
             "paging": true,
-            "lengthChange": false,
+            "lengthChange": true, // Aktifkan opsi perubahan jumlah data tampil
+            "lengthMenu": [10, 20, 50], // Atur pilihan jumlah data tampil
             "searching": true,
             "ordering": true,
             "info": true,
