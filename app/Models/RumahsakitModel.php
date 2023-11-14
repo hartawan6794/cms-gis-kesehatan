@@ -7,10 +7,10 @@ use CodeIgniter\Model;
 class RumahsakitModel extends Model {
     
 	protected $table = 'tbl_rumah_sakit';
-	protected $primaryKey = 'id_rs';
+	protected $primaryKey = 'id';
 	protected $returnType = 'object';
 	protected $useSoftDeletes = false;
-	protected $allowedFields = ['nama_rs', 'kecamatan', 'deskripsi', 'Latitude', 'longitude', 'gambar', 'is_jadwal', 'created_at', 'updated_at','notelp'];
+	protected $allowedFields = ['nama', 'kecamatan', 'deskripsi', 'Latitude', 'longitude', 'gambar', 'is_jadwal', 'created_at', 'updated_at','notelp'];
 	protected $useTimestamps = false;
 	protected $createdField  = 'created_at';
 	protected $updatedField  = 'updated_at';
