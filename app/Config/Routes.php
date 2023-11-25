@@ -43,6 +43,7 @@ $routes->group('api', function($routes){
 });
 
 $routes->get('/',  'Home::index',['filter' => 'auth']);
+$routes->get('login',  'Login::index',['filter' => 'authLogin']);
 // $routes->group('api', ['namespace' => 'App\Controllers'], function ($routes) {
 //     $routes->get('data', 'ApiController::index');
 //     $routes->get('auth', 'ApiController::authenticate');
