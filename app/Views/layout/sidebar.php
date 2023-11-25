@@ -24,12 +24,12 @@
                 </a>
               </li>
               
-              <li class="nav-item">
+              <!-- <li class="nav-item">
                 <a href="<?= base_url('user') ?>" class="nav-link <?= $seg == 'user' ? 'active' : '' ?>">
                   <i class="nav-icon far fa-user"></i>
                   <p>Pengguna</p>
                 </a>
-              </li>
+              </li> -->
               <li class="nav-item">
                 <a href="<?= base_url('rumahsakit') ?>" class="nav-link <?= $seg == 'rumahsakit' ? 'active' : '' ?>">
                   <i class="nav-icon fa fa-stethoscope"></i>
