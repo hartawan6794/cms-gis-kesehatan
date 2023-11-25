@@ -89,6 +89,14 @@
     <script src="<?= base_url('asset/js/sweetalert2.all.min.js') ?>"></script>
 
     <script>
+        $("#email, #password").keydown(function(event) {
+            var email = $('#email').val();
+            var pass = $('#password').val();
+            if (event.which == 13) { // Tombol "Enter" memiliki kode 13
+                event.preventDefault(); // Mencegah pengiriman formulir
+                login(email, pass);
+            }
+        });
         $('#btn-login').click(function() {
             // event.preventDefault();
             var email = $('#email').val();
@@ -96,6 +104,10 @@
 
             // console.log(email)
 
+            login(email, pass);
+        })
+
+        function login(email, pass) {
             $.ajax({
                 // fixBug get url from global function only
                 // get global variable is bug!
@@ -134,7 +146,7 @@
                 }
 
             })
-        })
+        }
     </script>
 
 </body>

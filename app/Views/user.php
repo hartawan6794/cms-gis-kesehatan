@@ -173,7 +173,7 @@
       "ordering": true,
       "info": true,
       "autoWidth": false,
-      "scrollY": '45vh',
+     "scrollY": true,
       "scrollX": true,
       "scrollCollapse": false,
       "responsive": false,
