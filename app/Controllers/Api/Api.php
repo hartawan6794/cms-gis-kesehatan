@@ -159,6 +159,8 @@ class Api extends BaseController
 
         $table = $data->tabel;
         $nama = $data->nama;
+        $latitude = $data->latitude;
+        $longitude = $data->longitude;
 
         $sql = "SELECT 
         id,
@@ -174,11 +176,26 @@ class Api extends BaseController
         WHERE nama like '%$nama%'";
 
         $data = $this->db->query($sql)->getResult();
+        foreach ($data as $row) {
+            $distance = round($this->haversineDistance($latitude, $longitude, $row->Latitude, $row->longitude), 1);
+            array_push($value, array(
+                'id'         => $row->id,
+                'table'      => $table,
+                'nama'       => $row->nama,
+                'kecamatan'  => $row->kecamatan,
+                'deskripsi'  => $row->deskripsi,
+                'latitude'   => $row->Latitude,
+                'longitude'  => $row->longitude,
+                'gambar'     => $row->gambar,
+                'notelp'     => $row->notelp,
+                'distance'   => $distance,
+            ));
+        }
         if ($data) {
             $response = [
                 'status'    => true,
                 'message'   => 'Berhasil Mendapatkan Data',
-                'result'      => $data,
+                'result'      => $value,
             ];
         } else {
             $response = [
