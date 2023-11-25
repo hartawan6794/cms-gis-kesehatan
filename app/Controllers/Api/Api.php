@@ -176,6 +176,7 @@ class Api extends BaseController
         WHERE nama like '%$nama%'";
 
         $data = $this->db->query($sql)->getResult();
+        $value = array();
         foreach ($data as $row) {
             $distance = round($this->haversineDistance($latitude, $longitude, $row->latitude, $row->longitude), 1);
             array_push($value, array(
